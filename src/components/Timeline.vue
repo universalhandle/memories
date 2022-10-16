@@ -102,6 +102,7 @@ import moment from 'moment';
 
 import * as dav from "../services/DavRequests";
 import * as utils from "../services/Utils";
+import localforage from "localforage";
 import justifiedLayout from "justified-layout";
 import axios from '@nextcloud/axios'
 import Folder from "./frame/Folder.vue";
@@ -150,8 +151,6 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
     private squareMode = false;
     /** Header rows for dayId key */
     private heads: { [dayid: number]: IHeadRow } = {};
-    /** Original days response */
-    private days: IDay[] = [];
 
     /** Computed row height */
     private rowHeight = 100;
@@ -215,12 +214,11 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
         // Fit to window
         this.handleResize();
 
+        // Add scroll listener
+        (this.$refs.recycler as any).$el.addEventListener('scroll', this.scrollPositionChange, false);
+
         // Get data
         await this.fetchDays();
-
-        // Timeline recycler init
-        (this.$refs.recycler as any).$el.addEventListener('scroll', this.scrollPositionChange, false);
-        this.scrollPositionChange();
     }
 
     /** Reset all state */
@@ -230,7 +228,6 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
         this.list = [];
         this.numRows = 0;
         this.heads = {};
-        this.days = [];
         this.currentStart = 0;
         this.currentEnd = 0;
         this.scrollerManager.reset();
@@ -488,8 +485,10 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
         let params: any = {};
 
         try {
-            this.loading++;
+            // this.loading++;
             const startState = this.state;
+
+            const furl = generateUrl(this.appendQuery(url), params);
 
             let data: IDay[] = [];
             if (this.$route.name === 'thisday') {
@@ -499,7 +498,12 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
             } else if (this.$route.name === 'people' && !this.$route.params.name) {
                 data = await dav.getPeopleData();
             } else {
-                data = (await axios.get<IDay[]>(generateUrl(this.appendQuery(url), params))).data;
+                const foraged = await localforage.getItem<IDay[]>(furl);
+                if (foraged) {
+                    await this.processDays(foraged);
+                }
+                data = (await axios.get<IDay[]>(furl)).data;
+                await localforage.setItem(furl, data);
             }
 
             if (this.state !== startState) return;
@@ -508,7 +512,7 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
             console.error(err);
             showError(err?.response?.data?.message || err.message);
         } finally {
-            this.loading--;
+            // this.loading--;
         }
     }
 
@@ -590,9 +594,12 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
         }
 
         // Store globally
-        this.days = data;
-        this.list = list;
-        this.heads = heads;
+        if (this.list.length) {
+            this.replaceRows(list);
+        } else {
+            this.list = list;
+            this.heads = heads;
+        }
 
         // Iterate the preload map
         // Now the inner detail objects are reactive
@@ -604,6 +611,57 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
 
         // Fix view height variable
         await this.scrollerManager.reflow();
+        this.scrollPositionChange();
+    }
+
+    /** Replace current rows with this one gracefully */
+    private replaceRows(rows: IRow[]) {
+        // Two pointers: match heads
+        let pOld = 0;
+        let pNew = 0;
+        let insert = false;
+        let remove = false
+        while (pOld < this.list.length && pNew < rows.length) {
+            const oldRow = this.list[pOld];
+            const newRow = rows[pNew];
+
+            // Insert new rows
+            if (insert) {
+                this.list.splice(pOld, 0, newRow);
+                pOld++;
+                pNew++;
+                if (rows[pNew].type === IRowType.HEAD) {
+                    insert = false;
+                }
+                continue;
+            }
+
+            // Remove old rows
+            if (remove) {
+                this.list.splice(pOld, 1);
+                if (this.list[pOld].type === IRowType.HEAD) {
+                    remove = false;
+                }
+                continue;
+            }
+
+            // Find the next heads
+            if (newRow.type !== IRowType.HEAD) { pNew++; continue; }
+            if (oldRow.type !== IRowType.HEAD) { pOld++; continue; }
+
+            if (oldRow.dayId < newRow.dayId) {
+                // newRow is a new head, start insertion
+                insert = true;
+                this.heads[newRow.dayId] = newRow as IHeadRow;
+            } else if (oldRow.dayId > newRow.dayId) {
+                // Different head, remove old
+                remove = true;
+            } else {
+                // Same head, continue
+                pOld++;
+                pNew++;
+            }
+        }
     }
 
     /** Fetch image data for one dayId */
@@ -620,7 +678,7 @@ export default class Timeline extends Mixins(GlobalMixin, UserConfig) {
             const data = res.data;
             if (this.state !== startState) return;
 
-            const day = this.days.find(d => d.dayid === dayId);
+            const day = this.heads[dayId].day;
             day.detail = data;
             day.count = data.length;
             this.processDay(day);

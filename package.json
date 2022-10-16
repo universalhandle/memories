@@ -37,6 +37,7 @@
     "@nextcloud/paths": "^2.1.0",
     "@nextcloud/vue": "^7.0.0",
     "justified-layout": "^4.1.0",
+    "localforage": "^1.10.0",
     "moment": "^2.29.4",
     "path-posix": "^1.0.0",
     "reflect-metadata": "^0.1.13",
