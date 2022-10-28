@@ -3,7 +3,7 @@ name: e2e
 on:
   push:
     branches:
-      - stable24
+      - master
 
 env:
   APP_NAME: memories
