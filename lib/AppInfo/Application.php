@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace OCA\Memories\AppInfo;
 
+use OCA\Memories\FastPreview;
 use OCA\Memories\Listeners\PostDeleteListener;
 use OCA\Memories\Listeners\PostWriteListener;
 use OCP\AppFramework\App;
@@ -67,6 +68,7 @@ class Application extends App implements IBootstrap
 
     public function register(IRegistrationContext $context): void
     {
+        FastPreview::intercept();
         $context->registerEventListener(NodeWrittenEvent::class, PostWriteListener::class);
         $context->registerEventListener(NodeTouchedEvent::class, PostWriteListener::class);
         $context->registerEventListener(NodeDeletedEvent::class, PostDeleteListener::class);
