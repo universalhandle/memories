@@ -1,48 +1,25 @@
 <template>
-  <div
-    class="scroller"
-    ref="scroller"
-    v-bind:class="{
-      'scrolling-recycler-now': scrollingRecyclerNowTimer,
-      'scrolling-recycler': scrollingRecyclerTimer,
-      'scrolling-now': scrollingNowTimer,
-      scrolling: scrollingTimer,
-    }"
-    @mousemove.passive="mousemove"
-    @mouseleave.passive="mouseleave"
-    @mousedown.passive="mousedown"
-    @mouseup.passive="interactend"
-    @touchmove.prevent="touchmove"
-    @touchstart.passive="interactstart"
-    @touchend.passive="interactend"
-    @touchcancel.passive="interactend"
-  >
-    <span
-      class="cursor st"
-      ref="cursorSt"
-      :style="{ transform: `translateY(${cursorY}px)` }"
-    >
+  <div class="scroller" ref="scroller" v-bind:class="{
+    'scrolling-recycler-now': scrollingRecyclerNowTimer,
+    'scrolling-recycler': scrollingRecyclerTimer,
+    'scrolling-now': scrollingNowTimer,
+    scrolling: scrollingTimer,
+  }" @mousemove.passive="mousemove" @mouseleave.passive="mouseleave" @mousedown.passive="mousedown"
+    @mouseup.passive="interactend" @touchmove.prevent="touchmove" @touchstart.passive="interactstart"
+    @touchend.passive="interactend" @touchcancel.passive="interactend">
+    <span class="cursor st" ref="cursorSt" :style="{ transform: `translateY(${cursorY}px)` }">
     </span>
 
-    <span
-      class="cursor hv"
-      :style="{ transform: `translateY(${hoverCursorY}px)` }"
-      @touchmove.prevent="touchmove"
-      @touchstart.passive="interactstart"
-      @touchend.passive="interactend"
-      @touchcancel.passive="interactend"
-    >
+    <span class="cursor hv" :style="{ transform: `translateY(${hoverCursorY}px)` }" @touchmove.prevent="touchmove"
+      @touchstart.passive="interactstart" @touchend.passive="interactend" @touchcancel.passive="interactend">
       <div class="text">{{ hoverCursorText }}</div>
-      <div class="icon"><ScrollIcon :size="22" /></div>
+      <div class="icon">
+        <ScrollIcon :size="22" />
+      </div>
     </span>
 
-    <div
-      v-for="tick of visibleTicks"
-      :key="tick.key"
-      class="tick"
-      :class="{ dash: !tick.text }"
-      :style="{ transform: `translateY(calc(${tick.top}px - 50%))` }"
-    >
+    <div v-for="tick of visibleTicks" :key="tick.key" class="tick" :class="{ dash: !tick.text }"
+      :style="{ transform: `translateY(calc(${tick.top}px - 50%))` }">
       <span v-if="tick.text">{{ tick.text }}</span>
     </div>
   </div>
@@ -152,7 +129,7 @@ export default defineComponent({
     },
 
     /** Recycler scroll event, must be called by timeline */
-    recyclerScrolled() {
+    recyclerScrolled(event: Event | null) {
       // This isn't a renewing timer, it's a scheduled task
       if (this.scrollingRecyclerUpdateTimer) return;
       this.scrollingRecyclerUpdateTimer = window.setTimeout(() => {
@@ -510,7 +487,7 @@ export default defineComponent({
 
     interactend() {
       this.interacting = false;
-      this.recyclerScrolled(); // make sure final position is correct
+      this.recyclerScrolled(null); // make sure final position is correct
     },
 
     /** Update scroller is being used to scroll recycler */
@@ -547,7 +524,7 @@ export default defineComponent({
     opacity: 1;
   }
 
-  > .tick {
+  >.tick {
     pointer-events: none;
     position: absolute;
     font-size: 0.75em;
@@ -566,6 +543,7 @@ export default defineComponent({
       background-color: var(--color-main-text);
       opacity: 0.15;
       display: block;
+
       @include phone {
         display: none;
       }
@@ -578,7 +556,7 @@ export default defineComponent({
     }
   }
 
-  > .cursor {
+  >.cursor {
     position: absolute;
     pointer-events: none;
     right: 0;
@@ -603,17 +581,20 @@ export default defineComponent({
       font-size: 0.95em;
       font-weight: 600;
 
-      > .icon {
+      >.icon {
         display: none;
         transform: translate(-16px, 6px);
       }
     }
   }
-  &.scrolling-recycler-now:not(.scrolling-now) > .cursor {
+
+  &.scrolling-recycler-now:not(.scrolling-now)>.cursor {
     transition: transform 0.1s linear;
   }
-  &:hover > .cursor {
+
+  &:hover>.cursor {
     transition: none !important;
+
     &.st {
       opacity: 1;
     }
@@ -623,15 +604,17 @@ export default defineComponent({
   @include phone {
     // Shift pointer events to hover cursor
     pointer-events: none;
+
     .cursor.hv {
       pointer-events: all;
     }
 
-    > .tick {
+    >.tick {
       right: 40px;
     }
+
     &:not(.scrolling) {
-      > .tick {
+      >.tick {
         display: none;
       }
     }
@@ -643,10 +626,12 @@ export default defineComponent({
       height: 40px;
       width: 70px;
       border-radius: 20px;
-      > .text {
+
+      >.text {
         display: none;
       }
-      > .icon {
+
+      >.icon {
         display: block;
       }
     }

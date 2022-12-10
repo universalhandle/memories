@@ -1,58 +1,29 @@
 <template>
-  <form
-    v-if="!showCollaboratorView"
-    class="album-form"
-    @submit.prevent="submit"
-  >
+  <form v-if="!showCollaboratorView" class="album-form" @submit.prevent="submit">
     <div class="form-inputs">
-      <NcTextField
-        ref="nameInput"
-        :value.sync="albumName"
-        type="text"
-        name="name"
-        :required="true"
-        autofocus="true"
-        :placeholder="t('photos', 'Name of the album')"
-      />
+      <NcTextField ref="nameInput" :value.sync="albumName" type="text" name="name" :required="true" autofocus="true"
+        :placeholder="t('photos', 'Name of the album')" />
       <label>
-        <NcTextField
-          :value.sync="albumLocation"
-          name="location"
-          type="text"
-          :placeholder="t('photos', 'Location of the album')"
-        />
+        <NcTextField :value.sync="albumLocation" name="location" type="text"
+          :placeholder="t('photos', 'Location of the album')" />
       </label>
     </div>
     <div class="form-buttons">
       <span class="left-buttons">
-        <NcButton
-          v-if="displayBackButton"
-          :aria-label="t('photos', 'Go back to the previous view.')"
-          type="tertiary"
-          @click="back"
-        >
+        <NcButton v-if="displayBackButton" :aria-label="t('photos', 'Go back to the previous view.')" type="tertiary"
+          @click="back">
           {{ t("photos", "Back") }}
         </NcButton>
       </span>
       <span class="right-buttons">
-        <NcButton
-          v-if="sharingEnabled && !editMode"
-          :aria-label="t('photos', 'Go to the add collaborators view.')"
-          type="secondary"
-          :disabled="albumName.trim() === '' || loading"
-          @click="showCollaboratorView = true"
-        >
+        <NcButton v-if="sharingEnabled && !editMode" :aria-label="t('photos', 'Go to the add collaborators view.')"
+          type="secondary" :disabled="albumName.trim() === '' || loading" @click="showCollaboratorView = true">
           <template #icon>
             <AccountMultiplePlus />
           </template>
           {{ t("photos", "Add collaborators") }}
         </NcButton>
-        <NcButton
-          :aria-label="saveText"
-          type="primary"
-          :disabled="albumName === '' || loading"
-          @click="submit()"
-        >
+        <NcButton :aria-label="saveText" type="primary" :disabled="albumName === '' || loading" @click="submit()">
           <template #icon>
             <NcLoadingIcon v-if="loading" />
             <Send v-else />
@@ -62,29 +33,17 @@
       </span>
     </div>
   </form>
-  <AlbumCollaborators
-    v-else
-    :album-name="albumName"
-    :allow-public-link="false"
-    :collaborators="[]"
-  >
+  <AlbumCollaborators v-else :album-name="albumName" :allow-public-link="false" :collaborators="[]">
     <template slot-scope="{ collaborators }">
       <span class="left-buttons">
-        <NcButton
-          :aria-label="t('photos', 'Back to the new album form.')"
-          type="tertiary"
-          @click="showCollaboratorView = false"
-        >
+        <NcButton :aria-label="t('photos', 'Back to the new album form.')" type="tertiary"
+          @click="showCollaboratorView = false">
           {{ t("photos", "Back") }}
         </NcButton>
       </span>
       <span class="right-buttons">
-        <NcButton
-          :aria-label="saveText"
-          type="primary"
-          :disabled="albumName.trim() === '' || loading"
-          @click="submit(collaborators)"
-        >
+        <NcButton :aria-label="saveText" type="primary" :disabled="albumName.trim() === '' || loading"
+          @click="submit(collaborators)">
           <template #icon>
             <NcLoadingIcon v-if="loading" />
             <Send v-else />
@@ -136,6 +95,7 @@ export default defineComponent({
 
   data() {
     return {
+      collaborators: [],
       showCollaboratorView: false,
       albumName: "",
       albumLocation: "",
@@ -176,7 +136,7 @@ export default defineComponent({
   },
 
   methods: {
-    submit(collaborators = []) {
+    submit(collaborators: any = []) {
       if (this.albumName === "" || this.loading) {
         return;
       }
@@ -251,41 +211,52 @@ export default defineComponent({
   flex-direction: column;
   height: 350px;
   padding: 16px;
+
   .form-title {
     font-weight: bold;
   }
+
   .form-subtitle {
     color: var(--color-text-lighter);
   }
+
   .form-inputs {
     flex-grow: 1;
     justify-items: flex-end;
+
     input {
       width: 100%;
     }
+
     label {
       display: flex;
       margin-top: 16px;
+
       :deep svg {
         margin-right: 12px;
       }
     }
   }
+
   .form-buttons {
     display: flex;
     justify-content: space-between;
+
     .left-buttons,
     .right-buttons {
       display: flex;
     }
+
     .right-buttons {
       justify-content: flex-end;
     }
+
     button {
       margin-right: 16px;
     }
   }
 }
+
 .left-buttons {
   flex-grow: 1;
 }

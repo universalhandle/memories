@@ -1,7 +1,7 @@
 /// <reference types="@nextcloud/typings" />
 
 import "reflect-metadata";
-import Vue from "vue";
+import { createApp } from "vue";
 import VueVirtualScroller from "vue-virtual-scroller";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import GlobalMixin from "./mixins/GlobalMixin";
@@ -66,10 +66,6 @@ if (!globalThis.videoClientIdPersistent) {
   );
 }
 
-Vue.mixin(GlobalMixin);
-Vue.mixin(UserConfig);
-Vue.use(VueVirtualScroller);
-
 // https://github.com/nextcloud/photos/blob/156f280c0476c483cb9ce81769ccb0c1c6500a4e/src/main.js
 // TODO: remove when we have a proper fileinfo standalone library
 // original scripts are loaded from
@@ -90,8 +86,12 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 });
 
-export default new Vue({
-  el: "#content",
-  router,
-  render: (h) => h(App),
-});
+const Vue = createApp(App);
+Vue.use(router);
+Vue.use(VueVirtualScroller);
+
+Vue.mixin(GlobalMixin);
+Vue.mixin(UserConfig);
+
+Vue.mount("#content");
+export default Vue;

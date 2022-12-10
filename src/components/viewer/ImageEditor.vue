@@ -1,10 +1,5 @@
 <template>
-  <div
-    ref="editor"
-    class="viewer__image-editor"
-    :class="{ loading: !imageEditor }"
-    v-bind="themeDataAttr"
-  />
+  <div ref="editor" class="viewer__image-editor" :class="{ loading: !imageEditor }" v-bind="themeDataAttr" />
 </template>
 
 <script lang="ts">
@@ -58,7 +53,7 @@ export default defineComponent({
   },
 
   computed: {
-    config(): FilerobotImageEditorConfig & { theme: any } {
+    config(): FilerobotImageEditorConfig & { theme: any; } {
       let src: string;
       if (["image/png", "image/jpeg", "image/webp"].includes(this.mime)) {
         src = this.src;
@@ -275,8 +270,8 @@ export default defineComponent({
     onExitWithoutSaving() {
       (<any>OC.dialogs).confirmDestructive(
         translations.changesLoseConfirmation +
-          "\n\n" +
-          translations.changesLoseConfirmationHint,
+        "\n\n" +
+        translations.changesLoseConfirmationHint,
         this.t("memories", "Unsaved changes"),
         {
           type: (<any>OC.dialogs).YES_NO_BUTTONS,
@@ -361,7 +356,8 @@ export default defineComponent({
   label,
   button {
     color: var(--color-main-text);
-    > span {
+
+    >span {
       font-size: var(--default-font-size) !important;
     }
   }
@@ -381,6 +377,7 @@ export default defineComponent({
 .SfxInput-root {
   height: auto !important;
   padding: 0 !important;
+
   .SfxInput-Base {
     margin: 0 !important;
   }
@@ -396,18 +393,22 @@ export default defineComponent({
   min-height: 44px !important;
   margin: 0 !important;
   border: transparent !important;
+
   &[color="error"] {
     color: white !important;
     background-color: var(--color-error) !important;
+
     &:hover,
     &:focus {
       border-color: white !important;
       background-color: var(--color-error-hover) !important;
     }
   }
+
   &[color="primary"] {
     color: var(--color-primary-text) !important;
     background-color: var(--color-primary-element) !important;
+
     &:hover,
     &:focus {
       background-color: var(--color-primary-element-hover) !important;
@@ -419,8 +420,9 @@ export default defineComponent({
 .SfxMenuItem-root {
   height: 44px;
   padding-left: 8px !important;
+
   // Center the menu entry icon and fix width
-  > div {
+  >div {
     margin-right: 0;
     padding: 14px;
     // Minus the parent padding-left
@@ -446,9 +448,11 @@ export default defineComponent({
     justify-content: center;
     color: var(--color-main-text);
   }
+
   .SfxModalTitle-Icon {
     margin-bottom: 22px !important;
     background: none !important;
+
     // Fit EmptyContent styling
     svg {
       width: 64px;
@@ -460,10 +464,12 @@ export default defineComponent({
       --color-error: var(--color-main-text);
     }
   }
+
   // Hide close icon (use cancel button)
   .SfxModalTitle-Close {
     display: none !important;
   }
+
   // Modal actions buttons display
   .SfxModalActions-root {
     justify-content: space-evenly !important;
@@ -471,8 +477,8 @@ export default defineComponent({
 }
 
 // Header buttons
-.FIE_topbar-center-options > button,
-.FIE_topbar-center-options > label {
+.FIE_topbar-center-options>button,
+.FIE_topbar-center-options>label {
   margin-left: 6px !important;
 }
 
@@ -488,10 +494,12 @@ export default defineComponent({
   height: 80px !important;
   padding: 8px;
   border-radius: var(--border-radius-large) !important;
+
   svg {
     width: 16px;
     height: 16px;
   }
+
   &-label {
     margin-top: 8px !important;
     overflow: hidden;
@@ -520,8 +528,8 @@ export default defineComponent({
   }
 
   // Matching buttons tools
-  & > div[class$="-tool-button"],
-  & > div[class$="-tool"] {
+  &>div[class$="-tool-button"],
+  &>div[class$="-tool"] {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -567,6 +575,7 @@ export default defineComponent({
       content: attr(title);
       font-weight: normal;
     }
+
     svg {
       display: none;
     }
@@ -578,6 +587,7 @@ export default defineComponent({
   color: var(--color-primary-text) !important;
   border: none !important;
   background-color: var(--color-primary-element) !important;
+
   &:hover,
   &:focus {
     background-color: var(--color-primary-element-hover) !important;
@@ -586,6 +596,7 @@ export default defineComponent({
 
 // Save Modal fixes
 .FIE_resize-tool-options {
+
   .FIE_resize-width-option,
   .FIE_resize-height-option {
     flex: 1 1;
@@ -596,10 +607,12 @@ export default defineComponent({
 // Resize lock
 .FIE_resize-ratio-locker {
   margin-right: 8px !important;
+
   // Icon is very thin
   svg {
     width: 20px;
     height: 20px;
+
     path {
       stroke-width: 1;
       stroke: var(--color-main-text);

@@ -1,141 +1,85 @@
 <template>
-  <div
-    class="memories_viewer outer"
-    v-if="show"
-    :class="{ fullyOpened, slideshowTimer }"
-    :style="{ width: outerWidth }"
-    @fullscreenchange="fullscreenChange"
-  >
-    <ImageEditor
-      v-if="editorOpen"
-      :mime="currentPhoto.mimetype"
-      :src="currentDownloadLink"
-      :fileid="currentPhoto.fileid"
-      @close="editorOpen = false"
-    />
+  <div class="memories_viewer outer" v-if="show" :class="{ fullyOpened, slideshowTimer }" :style="{ width: outerWidth }"
+    @fullscreenchange="fullscreenChange">
+    <ImageEditor v-if="editorOpen" :mime="currentPhoto.mimetype" :src="currentDownloadLink"
+      :fileid="currentPhoto.fileid" @close="editorOpen = false" />
 
-    <div
-      class="inner"
-      ref="inner"
-      v-show="!editorOpen"
-      @pointermove.passive="setUiVisible"
-      @pointerdown.passive="setUiVisible"
-    >
+    <div class="inner" ref="inner" v-show="!editorOpen" @pointermove.passive="setUiVisible"
+      @pointerdown.passive="setUiVisible">
       <div class="top-bar" v-if="photoswipe" :class="{ showControls }">
-        <NcActions
-          :inline="numInlineActions"
-          container=".memories_viewer .pswp"
-        >
-          <NcActionButton
-            v-if="canShare"
-            :aria-label="t('memories', 'Share')"
-            @click="shareCurrent"
-            :close-after-click="true"
-          >
+        <NcActions :inline="numInlineActions" container=".memories_viewer .pswp">
+          <NcActionButton v-if="canShare" :aria-label="t('memories', 'Share')" @click="shareCurrent"
+            :close-after-click="true">
             {{ t("memories", "Share") }}
-            <template #icon> <ShareIcon :size="24" /> </template>
+            <template #icon>
+              <ShareIcon :size="24" />
+            </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="!routeIsPublic && !routeIsAlbum"
-            :aria-label="t('memories', 'Delete')"
-            @click="deleteCurrent"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="!routeIsPublic && !routeIsAlbum" :aria-label="t('memories', 'Delete')"
+            @click="deleteCurrent" :close-after-click="true">
             {{ t("memories", "Delete") }}
-            <template #icon> <DeleteIcon :size="24" /> </template>
+            <template #icon>
+              <DeleteIcon :size="24" />
+            </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="!routeIsPublic && routeIsAlbum"
-            :aria-label="t('memories', 'Remove from album')"
-            @click="deleteCurrent"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="!routeIsPublic && routeIsAlbum" :aria-label="t('memories', 'Remove from album')"
+            @click="deleteCurrent" :close-after-click="true">
             {{ t("memories", "Remove from album") }}
-            <template #icon> <AlbumRemoveIcon :size="24" /> </template>
+            <template #icon>
+              <AlbumRemoveIcon :size="24" />
+            </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="!routeIsPublic"
-            :aria-label="t('memories', 'Favorite')"
-            @click="favoriteCurrent"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="!routeIsPublic" :aria-label="t('memories', 'Favorite')" @click="favoriteCurrent"
+            :close-after-click="true">
             {{ t("memories", "Favorite") }}
             <template #icon>
               <StarIcon v-if="isFavorite()" :size="24" />
               <StarOutlineIcon v-else :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="!routeIsPublic"
-            :aria-label="t('memories', 'Sidebar')"
-            @click="toggleSidebar"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="!routeIsPublic" :aria-label="t('memories', 'Sidebar')" @click="toggleSidebar"
+            :close-after-click="true">
             {{ t("memories", "Sidebar") }}
             <template #icon>
               <InfoIcon :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="canEdit && !routeIsPublic"
-            :aria-label="t('memories', 'Edit')"
-            @click="openEditor"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="canEdit && !routeIsPublic" :aria-label="t('memories', 'Edit')" @click="openEditor"
+            :close-after-click="true">
             {{ t("memories", "Edit") }}
             <template #icon>
               <TuneIcon :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            :aria-label="t('memories', 'Download')"
-            @click="downloadCurrent"
-            :close-after-click="true"
-            v-if="!this.state_noDownload"
-          >
+          <NcActionButton :aria-label="t('memories', 'Download')" @click="downloadCurrent" :close-after-click="true"
+            v-if="!state_noDownload">
             {{ t("memories", "Download") }}
             <template #icon>
               <DownloadIcon :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="!this.state_noDownload && currentPhoto?.liveid"
-            :aria-label="t('memories', 'Download Video')"
-            @click="downloadCurrentLiveVideo"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="!state_noDownload && currentPhoto?.liveid" :aria-label="t('memories', 'Download Video')"
+            @click="downloadCurrentLiveVideo" :close-after-click="true">
             {{ t("memories", "Download Video") }}
             <template #icon>
               <DownloadIcon :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            v-if="!routeIsPublic && !routeIsAlbum"
-            :aria-label="t('memories', 'View in folder')"
-            @click="viewInFolder"
-            :close-after-click="true"
-          >
+          <NcActionButton v-if="!routeIsPublic && !routeIsAlbum" :aria-label="t('memories', 'View in folder')"
+            @click="viewInFolder" :close-after-click="true">
             {{ t("memories", "View in folder") }}
             <template #icon>
               <OpenInNewIcon :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            :aria-label="t('memories', 'Slideshow')"
-            @click="startSlideshow"
-            :close-after-click="true"
-          >
+          <NcActionButton :aria-label="t('memories', 'Slideshow')" @click="startSlideshow" :close-after-click="true">
             {{ t("memories", "Slideshow") }}
             <template #icon>
               <SlideshowIcon :size="24" />
             </template>
           </NcActionButton>
-          <NcActionButton
-            :aria-label="t('memories', 'Edit EXIF Data')"
-            v-if="!routeIsPublic"
-            @click="editExif"
-            :close-after-click="true"
-          >
+          <NcActionButton :aria-label="t('memories', 'Edit EXIF Data')" v-if="!routeIsPublic" @click="editExif"
+            :close-after-click="true">
             {{ t("memories", "Edit EXIF Data") }}
             <template #icon>
               <EditFileIcon :size="24" />
@@ -144,18 +88,11 @@
         </NcActions>
       </div>
 
-      <div
-        class="bottom-bar"
-        v-if="photoswipe"
-        :class="{ showControls, showBottomBar }"
-      >
+      <div class="bottom-bar" v-if="photoswipe" :class="{ showControls, showBottomBar }">
         <div class="exif title" v-if="currentPhoto?.imageInfo?.exif?.Title">
           {{ currentPhoto.imageInfo.exif.Title }}
         </div>
-        <div
-          class="exif description"
-          v-if="currentPhoto?.imageInfo?.exif?.Description"
-        >
+        <div class="exif description" v-if="currentPhoto?.imageInfo?.exif?.Description">
           {{ currentPhoto.imageInfo.exif.Description }}
         </div>
         <div class="exif date" v-if="currentDateTaken">
@@ -270,7 +207,7 @@ export default defineComponent({
 
   computed: {
     /** Number of buttons to show inline */
-    numInlineActions() {
+    numInlineActions(): number {
       let base = 3;
       if (this.canShare) base++;
       if (this.canEdit) base++;
@@ -283,17 +220,17 @@ export default defineComponent({
     },
 
     /** Route is public */
-    routeIsPublic() {
+    routeIsPublic(): boolean {
       return this.$route.name === "folder-share";
     },
 
     /** Route is album */
-    routeIsAlbum() {
+    routeIsAlbum(): boolean {
       return this.$route.name === "albums";
     },
 
     /** Get the currently open photo */
-    currentPhoto() {
+    currentPhoto(): IPhoto | null {
       if (!this.list.length || !this.photoswipe) {
         return null;
       }
@@ -305,31 +242,31 @@ export default defineComponent({
     },
 
     /** Is the current slide a video */
-    isVideo() {
-      return this.currentPhoto?.flag & this.c.FLAG_IS_VIDEO;
+    isVideo(): boolean {
+      return Boolean(this.currentPhoto?.flag & this.c.FLAG_IS_VIDEO);
     },
 
     /** Show bottom bar info such as date taken */
-    showBottomBar() {
-      return !this.isVideo && this.fullyOpened && this.currentPhoto?.imageInfo;
+    showBottomBar(): boolean {
+      return !this.isVideo && this.fullyOpened && Boolean(this.currentPhoto?.imageInfo);
     },
 
     /** Get date taken string */
-    currentDateTaken() {
+    currentDateTaken(): string | null {
       const date = this.currentPhoto?.imageInfo?.datetaken;
       if (!date) return null;
       return utils.getLongDateStr(new Date(date * 1000), false, true);
     },
 
     /** Get download link for current photo */
-    currentDownloadLink() {
+    currentDownloadLink(): string | null {
       return this.currentPhoto
         ? window.location.origin + getDownloadLink(this.currentPhoto)
         : null;
     },
 
     /** Allow opening editor */
-    canEdit() {
+    canEdit(): boolean {
       return (
         this.currentPhoto?.mimetype?.startsWith("image/") &&
         !this.currentPhoto.liveid
@@ -337,7 +274,7 @@ export default defineComponent({
     },
 
     /** Does the browser support native share API */
-    canShare() {
+    canShare(): boolean {
       return "share" in navigator && this.currentPhoto && !this.isVideo;
     },
   },
@@ -369,7 +306,7 @@ export default defineComponent({
     },
 
     /** Event on file changed */
-    handleFileUpdated({ fileid }: { fileid: number }) {
+    handleFileUpdated({ fileid }: { fileid: number; }) {
       if (this.currentPhoto && this.currentPhoto.fileid === fileid) {
         this.currentPhoto.etag += "_";
         this.currentPhoto.imageInfo = null;
@@ -547,14 +484,14 @@ export default defineComponent({
       });
 
       // Video support
-      new PsVideo(this.photoswipe, {
+      new PsVideo(<PhotoSwipe>this.photoswipe, {
         videoAttributes: { controls: "", playsinline: "", preload: "none" },
         autoplay: true,
         preventDragOffset: 40,
       });
 
       // Live photo support
-      new PsLivePhoto(this.photoswipe, {});
+      new PsLivePhoto(<PhotoSwipe>this.photoswipe, {});
 
       // Patch the close button to stop the slideshow
       const _close = this.photoswipe.close.bind(this.photoswipe);
@@ -1170,6 +1107,7 @@ export default defineComponent({
   transition: opacity 0.2s ease-in-out;
   opacity: 0;
   pointer-events: none;
+
   &.showControls {
     opacity: 1;
     pointer-events: auto;
@@ -1188,6 +1126,7 @@ export default defineComponent({
 
   transition: opacity 0.2s ease-in-out;
   opacity: 0;
+
   &.showControls.showBottomBar {
     opacity: 1;
   }
@@ -1197,6 +1136,7 @@ export default defineComponent({
       font-weight: bold;
       font-size: 0.9em;
     }
+
     &.description {
       margin-top: -2px;
       margin-bottom: 2px;
@@ -1228,6 +1168,7 @@ export default defineComponent({
 }
 
 :deep .plyr__volume {
+
   // Cannot be vertical yet :(
   @media (max-width: 768px) {
     display: none;
@@ -1255,6 +1196,7 @@ export default defineComponent({
       cursor: pointer;
     }
   }
+
   .pswp__icn-shadow {
     display: none;
   }

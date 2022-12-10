@@ -2,8 +2,8 @@
   <FirstStart v-if="isFirstStart" />
 
   <NcContent
+    v-else-if="false"
     app-name="memories"
-    v-else
     :class="{
       'remove-gap': removeOuterGap,
     }"
@@ -35,10 +35,14 @@
       </div>
     </NcAppContent>
   </NcContent>
+
+  <div class="outer" v-else>
+    <router-view />
+  </div>
 </template>
 
 <script lang="ts">
-import Vue, { defineComponent } from "vue";
+import { defineComponent } from "vue";
 
 import NcContent from "@nextcloud/vue/dist/Components/NcContent";
 import NcAppContent from "@nextcloud/vue/dist/Components/NcAppContent";
@@ -95,16 +99,16 @@ export default defineComponent({
   data() {
     return {
       navItems: [],
-      metadataComponent: null as Metadata,
+      metadataComponent: null as any,
     };
   },
 
   computed: {
-    ncVersion() {
+    ncVersion(): number {
       const version = (<any>window.OC).config.version.split(".");
       return Number(version[0]);
     },
-    recognize() {
+    recognize(): string | boolean {
       if (!this.config_recognizeEnabled) {
         return false;
       }
@@ -115,7 +119,7 @@ export default defineComponent({
 
       return t("memories", "People");
     },
-    facerecognition() {
+    facerecognition(): string | boolean {
       if (!this.config_facerecognitionInstalled) {
         return false;
       }
@@ -126,16 +130,16 @@ export default defineComponent({
 
       return t("memories", "People");
     },
-    isFirstStart() {
+    isFirstStart(): boolean {
       return this.config_timelinePath === "EMPTY";
     },
-    showAlbums() {
+    showAlbums(): boolean {
       return this.config_albumsEnabled;
     },
-    removeOuterGap() {
+    removeOuterGap(): boolean {
       return this.ncVersion >= 25;
     },
-    showNavigation() {
+    showNavigation(): boolean {
       return this.$route.name !== "folder-share";
     },
   },
@@ -174,7 +178,7 @@ export default defineComponent({
             if (this.metadataComponent) {
               this.metadataComponent.$destroy();
             }
-            this.metadataComponent = new Vue(Metadata);
+            this.metadataComponent = new Metadata();
             // Only mount after we have all the info we need
             await this.metadataComponent.update(fileInfo);
             this.metadataComponent.$mount(el);
@@ -281,9 +285,9 @@ export default defineComponent({
       if (globalThis.windowInnerWidth <= 1024) nav?.toggleNavigation(false);
     },
 
-    doRouteChecks() {
+    doRouteChecks(): void {
       if (this.$route.name === "folder-share") {
-        this.putFolderShareToken(this.$route.params.token);
+        this.putFolderShareToken(<string>this.$route.params.token);
       }
     },
 

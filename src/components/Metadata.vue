@@ -27,12 +27,11 @@
 
       <div class="edit" v-if="field.edit">
         <NcActions :inline="1">
-          <NcActionButton
-            :aria-label="t('memories', 'Edit')"
-            @click="field.edit()"
-          >
+          <NcActionButton :aria-label="t('memories', 'Edit')" @click="field.edit()">
             {{ t("memories", "Edit") }}
-            <template #icon> <EditIcon :size="20" /> </template>
+            <template #icon>
+              <EditIcon :size="20" />
+            </template>
           </NcActionButton>
         </NcActions>
       </div>
@@ -67,6 +66,14 @@ import InfoIcon from "vue-material-design-icons/InformationOutline.vue";
 import LocationIcon from "vue-material-design-icons/MapMarker.vue";
 import { API } from "../services/API";
 
+interface TopField {
+  title: string;
+  subtitle: string[];
+  icon: any;
+  href?: string;
+  edit?: () => void;
+};
+
 export default defineComponent({
   name: "Metadata",
   components: {
@@ -78,7 +85,7 @@ export default defineComponent({
   data() {
     return {
       fileInfo: null as IFileInfo,
-      exif: {} as { [prop: string]: any },
+      exif: {} as { [prop: string]: any; },
       baseInfo: {} as any,
       nominatim: null as any,
       state: 0,
@@ -94,14 +101,8 @@ export default defineComponent({
   },
 
   computed: {
-    topFields() {
-      let list: {
-        title: string;
-        subtitle: string[];
-        icon: any;
-        href?: string;
-        edit?: () => void;
-      }[] = [];
+    topFields(): TopField[] {
+      let list: TopField[] = [];
 
       if (this.dateOriginal) {
         list.push({
@@ -152,7 +153,7 @@ export default defineComponent({
     },
 
     /** Date taken info */
-    dateOriginal() {
+    dateOriginal(): moment.Moment | null {
       const dt = this.exif["DateTimeOriginal"] || this.exif["CreateDate"];
       if (!dt) return null;
 
@@ -162,12 +163,12 @@ export default defineComponent({
       return m;
     },
 
-    dateOriginalStr() {
+    dateOriginalStr(): string | null {
       if (!this.dateOriginal) return null;
       return utils.getLongDateStr(this.dateOriginal.toDate(), true);
     },
 
-    dateOriginalTime() {
+    dateOriginalTime(): string[] | null {
       if (!this.dateOriginal) return null;
 
       // Try to get timezone
@@ -182,7 +183,7 @@ export default defineComponent({
     },
 
     /** Camera make and model info */
-    camera() {
+    camera(): string | null {
       const make = this.exif["Make"];
       const model = this.exif["Model"];
       if (!make || !model) return null;
@@ -190,7 +191,7 @@ export default defineComponent({
       return `${make} ${model}`;
     },
 
-    cameraSub() {
+    cameraSub(): string[] | null {
       const f = this.exif["FNumber"] || this.exif["Aperture"];
       const s = this.shutterSpeed;
       const len = this.exif["FocalLength"];
@@ -205,11 +206,11 @@ export default defineComponent({
     },
 
     /** Convert shutter speed decimal to 1/x format */
-    shutterSpeed() {
+    shutterSpeed(): string | null {
       const speed = Number(
         this.exif["ShutterSpeedValue"] ||
-          this.exif["ShutterSpeed"] ||
-          this.exif["ExposureTime"]
+        this.exif["ShutterSpeed"] ||
+        this.exif["ExposureTime"]
       );
       if (!speed) return null;
 
@@ -221,11 +222,11 @@ export default defineComponent({
     },
 
     /** Image info */
-    imageInfo() {
+    imageInfo(): string | null {
       return this.fileInfo.basename || (<any>this.fileInfo).name;
     },
 
-    imageInfoSub() {
+    imageInfoSub(): string[] | null {
       let parts = [];
       let mp = Number(this.exif["Megapixels"]);
 
@@ -244,7 +245,7 @@ export default defineComponent({
       return parts;
     },
 
-    address() {
+    address(): string | null {
       if (!this.lat || !this.lon) return null;
 
       if (!this.nominatim) return this.t("memories", "Loading …");
@@ -263,15 +264,15 @@ export default defineComponent({
       }
     },
 
-    lat() {
+    lat(): number | null {
       return this.exif["GPSLatitude"];
     },
 
-    lon() {
+    lon(): number | null {
       return this.exif["GPSLongitude"];
     },
 
-    mapUrl() {
+    mapUrl(): string | null {
       const boxSize = 0.0075;
       const bbox = [
         this.lon - boxSize,
@@ -283,7 +284,7 @@ export default defineComponent({
       return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox.join()}&marker=${m}`;
     },
 
-    mapFullUrl() {
+    mapFullUrl(): string | null {
       return `https://www.openstreetmap.org/?mlat=${this.lat}&mlon=${this.lon}#map=18/${this.lat}/${this.lon}`;
     },
   },
@@ -345,9 +346,11 @@ export default defineComponent({
       color: var(--color-text-lighter);
     }
   }
+
   .edit {
     transform: translateX(10px);
   }
+
   .text {
     display: inline-block;
     word-break: break-word;
@@ -355,6 +358,7 @@ export default defineComponent({
 
     .subtitle {
       font-size: 0.95em;
+
       .part {
         margin-right: 5px;
       }

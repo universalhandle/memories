@@ -1,14 +1,9 @@
 <template>
-  <router-link
-    draggable="false"
-    class="folder fill-block"
-    :class="{
-      hasPreview: previews.length > 0,
-      onePreview: previews.length === 1,
-      hasError: error,
-    }"
-    :to="target"
-  >
+  <router-link draggable="false" class="folder fill-block" :class="{
+    hasPreview: previews.length > 0,
+    onePreview: previews.length === 1,
+    hasError: error,
+  }" :to="target">
     <div class="big-icon fill-block">
       <FolderIcon class="icon" />
       <div class="name">{{ data.name }}</div>
@@ -17,11 +12,7 @@
     <div class="previews fill-block">
       <div class="preview-container fill-block">
         <div class="img-outer" v-for="info of previews" :key="info.fileid">
-          <img
-            class="fill-block"
-            :src="getPreviewUrl(info, true, 256)"
-            @error="$event.target.classList.add('error')"
-          />
+          <img class="fill-block" :src="getPreviewUrl(info, true, 256)" @error="$event.target.classList.add('error')" />
         </div>
       </div>
     </div>
@@ -132,7 +123,7 @@ export default defineComponent({
     height: 50%;
   }
 
-  > .name {
+  >.name {
     cursor: pointer;
     width: 100%;
     padding: 0 5%;
@@ -151,36 +142,38 @@ export default defineComponent({
   }
 
   // Make it white if there is a preview
-  .folder.hasPreview > & {
+  .folder.hasPreview>& {
     .folder-icon {
       opacity: 1;
       filter: invert(1) brightness(100);
     }
+
     .name {
       color: white;
     }
   }
 
   // Show it on hover if not a preview
-  .folder:hover > & > .folder-icon {
+  .folder:hover>&>.folder-icon {
     opacity: 0.8;
   }
-  .folder.hasPreview:hover > & {
+
+  .folder.hasPreview:hover>& {
     opacity: 0;
   }
 
   // Make it red if has an error
-  .folder.hasError > & {
+  .folder.hasError>& {
     .folder-icon {
-      filter: invert(12%) sepia(62%) saturate(5862%) hue-rotate(8deg)
-        brightness(103%) contrast(128%);
+      filter: invert(12%) sepia(62%) saturate(5862%) hue-rotate(8deg) brightness(103%) contrast(128%);
     }
+
     .name {
       color: #bb0000;
     }
   }
 
-  > .folder-icon {
+  >.folder-icon {
     cursor: pointer;
     height: 90%;
     width: 100%;
@@ -208,12 +201,12 @@ export default defineComponent({
     height: 50%;
     display: inline-block;
 
-    .folder.onePreview > & {
+    .folder.onePreview>& {
       width: 100%;
       height: 100%;
     }
 
-    > img {
+    >img {
       object-fit: cover;
       padding: 0;
       filter: brightness(50%);
@@ -222,6 +215,7 @@ export default defineComponent({
       &.error {
         display: none;
       }
+
       .folder:hover & {
         filter: brightness(100%);
       }

@@ -2,7 +2,7 @@
   <Modal @close="close" size="large" v-if="show">
     <template #title>
       {{
-        t("memories", "Merge {name} with person", { name: $route.params.name })
+          t("memories", "Merge {name} with person", { name: $route.params.name })
       }}
     </template>
 
@@ -11,10 +11,10 @@
 
       <div v-if="procesingTotal > 0" class="info-pad">
         {{
-          t("memories", "Processing … {n}/{m}", {
-            n: processing,
-            m: procesingTotal,
-          })
+            t("memories", "Processing … {n}/{m}", {
+              n: processing,
+              m: procesingTotal,
+            })
         }}
       </div>
     </div>
@@ -157,6 +157,7 @@ export default defineComponent({
 .outer {
   margin-top: 15px;
 }
+
 .info-pad {
   margin-top: 6px;
   margin-bottom: 2px;

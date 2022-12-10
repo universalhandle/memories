@@ -1,12 +1,7 @@
 <template>
   <div class="outer" v-show="years.length > 0">
     <div class="inner" ref="inner">
-      <div
-        v-for="year of years"
-        class="group"
-        :key="year.year"
-        @click="click(year)"
-      >
+      <div v-for="year of years" class="group" :key="year.year" @click="click(year)">
         <img class="fill-block" :src="year.url" />
 
         <div class="overlay">
@@ -17,23 +12,21 @@
 
     <div class="left-btn dir-btn" v-if="hasLeft">
       <NcActions>
-        <NcActionButton
-          :aria-label="t('memories', 'Move left')"
-          @click="moveLeft"
-        >
+        <NcActionButton :aria-label="t('memories', 'Move left')" @click="moveLeft">
           {{ t("memories", "Move left") }}
-          <template #icon> <LeftMoveIcon :size="28" /> </template>
+          <template #icon>
+            <LeftMoveIcon :size="28" />
+          </template>
         </NcActionButton>
       </NcActions>
     </div>
     <div class="right-btn dir-btn" v-if="hasRight">
       <NcActions>
-        <NcActionButton
-          :aria-label="t('memories', 'Move right')"
-          @click="moveRight"
-        >
+        <NcActionButton :aria-label="t('memories', 'Move right')" @click="moveRight">
           {{ t("memories", "Move right") }}
-          <template #icon> <RightMoveIcon :size="28" /> </template>
+          <template #icon>
+            <RightMoveIcon :size="28" />
+          </template>
         </NcActionButton>
       </NcActions>
     </div>
@@ -255,13 +248,16 @@ $mobHeight: 150px;
   @media (max-width: 768px) {
     width: 98%;
     padding: 0;
+
     .inner {
       padding: 0 8px;
     }
+
     .dir-btn {
       display: none;
     }
   }
+
   @media (max-width: 600px) {
     height: $mobHeight;
   }
@@ -312,6 +308,7 @@ $mobHeight: 150px;
   @media (max-width: 600px) {
     aspect-ratio: 3/4;
     height: $mobHeight;
+
     .overlay {
       font-size: 1.1em;
     }

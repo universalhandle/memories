@@ -3,7 +3,9 @@
     <NcActions v-if="!isAlbumList">
       <NcActionButton :aria-label="t('memories', 'Back')" @click="back()">
         {{ t("memories", "Back") }}
-        <template #icon> <BackIcon :size="20" /> </template>
+        <template #icon>
+          <BackIcon :size="20" />
+        </template>
       </NcActionButton>
     </NcActions>
 
@@ -11,50 +13,40 @@
 
     <div class="right-actions">
       <NcActions :inline="1">
-        <NcActionButton
-          :aria-label="t('memories', 'Create new album')"
-          @click="$refs.createModal.open(false)"
-          close-after-click
-          v-if="isAlbumList"
-        >
+        <NcActionButton :aria-label="t('memories', 'Create new album')" @click="$refs.createModal.open(false)"
+          close-after-click v-if="isAlbumList">
           {{ t("memories", "Create new album") }}
-          <template #icon> <PlusIcon :size="20" /> </template>
+          <template #icon>
+            <PlusIcon :size="20" />
+          </template>
         </NcActionButton>
-        <NcActionButton
-          :aria-label="t('memories', 'Share album')"
-          @click="$refs.shareModal.open(false)"
-          close-after-click
-          v-if="canEditAlbum"
-        >
+        <NcActionButton :aria-label="t('memories', 'Share album')" @click="$refs.shareModal.open(false)"
+          close-after-click v-if="canEditAlbum">
           {{ t("memories", "Share album") }}
-          <template #icon> <ShareIcon :size="20" /> </template>
+          <template #icon>
+            <ShareIcon :size="20" />
+          </template>
         </NcActionButton>
-        <NcActionButton
-          :aria-label="t('memories', 'Download album')"
-          @click="downloadAlbum()"
-          close-after-click
-          v-if="!isAlbumList"
-        >
+        <NcActionButton :aria-label="t('memories', 'Download album')" @click="downloadAlbum()" close-after-click
+          v-if="!isAlbumList">
           {{ t("memories", "Download album") }}
-          <template #icon> <DownloadIcon :size="20" /> </template>
+          <template #icon>
+            <DownloadIcon :size="20" />
+          </template>
         </NcActionButton>
-        <NcActionButton
-          :aria-label="t('memories', 'Edit album details')"
-          @click="$refs.createModal.open(true)"
-          close-after-click
-          v-if="canEditAlbum"
-        >
+        <NcActionButton :aria-label="t('memories', 'Edit album details')" @click="$refs.createModal.open(true)"
+          close-after-click v-if="canEditAlbum">
           {{ t("memories", "Edit album details") }}
-          <template #icon> <EditIcon :size="20" /> </template>
+          <template #icon>
+            <EditIcon :size="20" />
+          </template>
         </NcActionButton>
-        <NcActionButton
-          :aria-label="t('memories', 'Delete album')"
-          @click="$refs.deleteModal.open()"
-          close-after-click
-          v-if="canEditAlbum"
-        >
+        <NcActionButton :aria-label="t('memories', 'Delete album')" @click="$refs.deleteModal.open()" close-after-click
+          v-if="canEditAlbum">
           {{ t("memories", "Delete album") }}
-          <template #icon> <DeleteIcon :size="20" /> </template>
+          <template #icon>
+            <DeleteIcon :size="20" />
+          </template>
         </NcActionButton>
       </NcActions>
     </div>
@@ -114,11 +106,11 @@ export default defineComponent({
   },
 
   computed: {
-    isAlbumList() {
+    isAlbumList(): boolean {
       return !Boolean(this.$route.params.name);
     },
 
-    canEditAlbum() {
+    canEditAlbum(): boolean {
       return (
         !this.isAlbumList && this.$route.params.user === getCurrentUser()?.uid
       );
@@ -137,7 +129,7 @@ export default defineComponent({
 
   methods: {
     createMatter() {
-      this.name = this.$route.params.name || this.t("memories", "Albums");
+      this.name = <string>this.$route.params.name || this.t("memories", "Albums");
     },
 
     back() {
@@ -146,7 +138,7 @@ export default defineComponent({
 
     async downloadAlbum() {
       const res = await axios.post(
-        API.ALBUM_DOWNLOAD(this.$route.params.user, this.$route.params.name)
+        API.ALBUM_DOWNLOAD(<string>this.$route.params.user, <string>this.$route.params.name)
       );
       if (res.status === 200 && res.data.handle) {
         downloadWithHandle(res.data.handle);
@@ -172,6 +164,7 @@ export default defineComponent({
   .right-actions {
     margin-right: 40px;
     z-index: 50;
+
     @media (max-width: 768px) {
       margin-right: 10px;
     }

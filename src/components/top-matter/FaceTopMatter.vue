@@ -3,7 +3,9 @@
     <NcActions>
       <NcActionButton :aria-label="t('memories', 'Back')" @click="back()">
         {{ t("memories", "Back") }}
-        <template #icon> <BackIcon :size="20" /> </template>
+        <template #icon>
+          <BackIcon :size="20" />
+        </template>
       </NcActionButton>
     </NcActions>
 
@@ -11,36 +13,29 @@
 
     <div class="right-actions">
       <NcActions :inline="1">
-        <NcActionButton
-          :aria-label="t('memories', 'Rename person')"
-          @click="$refs.editModal.open()"
-          close-after-click
-        >
+        <NcActionButton :aria-label="t('memories', 'Rename person')" @click="$refs.editModal.open()" close-after-click>
           {{ t("memories", "Rename person") }}
-          <template #icon> <EditIcon :size="20" /> </template>
+          <template #icon>
+            <EditIcon :size="20" />
+          </template>
         </NcActionButton>
-        <NcActionButton
-          :aria-label="t('memories', 'Merge with different person')"
-          @click="$refs.mergeModal.open()"
-          close-after-click
-        >
+        <NcActionButton :aria-label="t('memories', 'Merge with different person')" @click="$refs.mergeModal.open()"
+          close-after-click>
           {{ t("memories", "Merge with different person") }}
-          <template #icon> <MergeIcon :size="20" /> </template>
+          <template #icon>
+            <MergeIcon :size="20" />
+          </template>
         </NcActionButton>
-        <NcActionCheckbox
-          :aria-label="t('memories', 'Mark person in preview')"
-          :checked.sync="config_showFaceRect"
-          @change="changeShowFaceRect"
-        >
+        <NcActionCheckbox :aria-label="t('memories', 'Mark person in preview')" :checked.sync="config_showFaceRect"
+          @change="changeShowFaceRect">
           {{ t("memories", "Mark person in preview") }}
         </NcActionCheckbox>
-        <NcActionButton
-          :aria-label="t('memories', 'Remove person')"
-          @click="$refs.deleteModal.open()"
-          close-after-click
-        >
+        <NcActionButton :aria-label="t('memories', 'Remove person')" @click="$refs.deleteModal.open()"
+          close-after-click>
           {{ t("memories", "Remove person") }}
-          <template #icon> <DeleteIcon :size="20" /> </template>
+          <template #icon>
+            <DeleteIcon :size="20" />
+          </template>
         </NcActionButton>
       </NcActions>
     </div>
@@ -99,7 +94,7 @@ export default defineComponent({
 
   methods: {
     createMatter() {
-      this.name = this.$route.params.name || "";
+      this.name = <string>this.$route.params.name || "";
     },
 
     back() {
@@ -135,6 +130,7 @@ export default defineComponent({
   .right-actions {
     margin-right: 40px;
     z-index: 50;
+
     @media (max-width: 768px) {
       margin-right: 10px;
     }

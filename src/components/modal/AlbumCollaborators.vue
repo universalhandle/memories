@@ -7,36 +7,22 @@
     <form class="manage-collaborators__form" @submit.prevent>
       <NcPopover ref="popover" :auto-size="true" :distance="0">
         <label slot="trigger" class="manage-collaborators__form__input">
-          <NcTextField
-            :value.sync="searchText"
-            autocomplete="off"
-            type="search"
-            name="search"
-            :aria-label="t('photos', 'Search for collaborators')"
-            aria-autocomplete="list"
+          <NcTextField :value.sync="searchText" autocomplete="off" type="search" name="search"
+            :aria-label="t('photos', 'Search for collaborators')" aria-autocomplete="list"
             :aria-controls="`manage-collaborators__form__selection-${randomId} manage-collaborators__form__list-${randomId}`"
-            :placeholder="t('photos', 'Search people or groups')"
-            @input="searchCollaborators"
-          >
+            :placeholder="t('photos', 'Search people or groups')" @input="searchCollaborators">
             <Magnify :size="16" />
           </NcTextField>
           <NcLoadingIcon v-if="loadingCollaborators" />
         </label>
 
-        <ul
-          v-if="searchResults.length !== 0"
-          :id="`manage-collaborators__form__list-${randomId}`"
-          class="manage-collaborators__form__list"
-        >
+        <ul v-if="searchResults.length !== 0" :id="`manage-collaborators__form__list-${randomId}`"
+          class="manage-collaborators__form__list">
           <li v-for="collaboratorKey of searchResults" :key="collaboratorKey">
-            <NcListItemIcon
-              :id="availableCollaborators[collaboratorKey].id"
-              class="manage-collaborators__form__list__result"
-              :title="availableCollaborators[collaboratorKey].id"
-              :search="searchText"
-              :user="availableCollaborators[collaboratorKey].id"
-              :display-name="availableCollaborators[collaboratorKey].label"
-              :aria-label="
+            <NcListItemIcon :id="availableCollaborators[collaboratorKey].id"
+              class="manage-collaborators__form__list__result" :title="availableCollaborators[collaboratorKey].id"
+              :search="searchText" :user="availableCollaborators[collaboratorKey].id"
+              :display-name="availableCollaborators[collaboratorKey].label" :aria-label="
                 t(
                   'photos',
                   'Add {collaboratorLabel} to the collaborators list',
@@ -45,48 +31,32 @@
                       availableCollaborators[collaboratorKey].label,
                   }
                 )
-              "
-              @click="selectEntity(collaboratorKey)"
-            />
+              " @click="selectEntity(collaboratorKey)" />
           </li>
         </ul>
-        <NcEmptyContent
-          v-else
-          key="emptycontent"
-          class="manage-collaborators__form__list--empty"
-          :title="t('photos', 'No collaborators available')"
-        >
+        <NcEmptyContent v-else key="emptycontent" class="manage-collaborators__form__list--empty"
+          :title="t('photos', 'No collaborators available')">
           <AccountGroup slot="icon" />
         </NcEmptyContent>
       </NcPopover>
     </form>
 
     <ul class="manage-collaborators__selection">
-      <li
-        v-for="collaboratorKey of listableSelectedCollaboratorsKeys"
-        :key="collaboratorKey"
-        class="manage-collaborators__selection__item"
-      >
-        <NcListItemIcon
-          :id="availableCollaborators[collaboratorKey].id"
+      <li v-for="collaboratorKey of listableSelectedCollaboratorsKeys" :key="collaboratorKey"
+        class="manage-collaborators__selection__item">
+        <NcListItemIcon :id="availableCollaborators[collaboratorKey].id"
           :display-name="availableCollaborators[collaboratorKey].label"
-          :title="availableCollaborators[collaboratorKey].id"
-          :user="availableCollaborators[collaboratorKey].id"
-        >
-          <NcButton
-            type="tertiary"
-            :aria-label="
-              t(
-                'photos',
-                'Remove {collaboratorLabel} from the collaborators list',
-                {
-                  collaboratorLabel:
-                    availableCollaborators[collaboratorKey].label,
-                }
-              )
-            "
-            @click="unselectEntity(collaboratorKey)"
-          >
+          :title="availableCollaborators[collaboratorKey].id" :user="availableCollaborators[collaboratorKey].id">
+          <NcButton type="tertiary" :aria-label="
+            t(
+              'photos',
+              'Remove {collaboratorLabel} from the collaborators list',
+              {
+                collaboratorLabel:
+                  availableCollaborators[collaboratorKey].label,
+              }
+            )
+          " @click="unselectEntity(collaboratorKey)">
             <Close slot="icon" :size="20" />
           </NcButton>
         </NcListItemIcon>
@@ -96,12 +66,8 @@
     <div class="actions">
       <div v-if="allowPublicLink" class="actions__public-link">
         <template v-if="isPublicLinkSelected">
-          <NcButton
-            class="manage-collaborators__public-link-button"
-            :aria-label="t('photos', 'Copy the public link')"
-            :disabled="publicLink.id === ''"
-            @click="copyPublicLink"
-          >
+          <NcButton class="manage-collaborators__public-link-button" :aria-label="t('photos', 'Copy the public link')"
+            :disabled="publicLink.id === ''" @click="copyPublicLink">
             <template v-if="publicLinkCopied">
               {{ t("photos", "Public link copied!") }}
             </template>
@@ -113,21 +79,13 @@
               <ContentCopy v-else />
             </template>
           </NcButton>
-          <NcButton
-            type="tertiary"
-            :aria-label="t('photos', 'Delete the public link')"
-            :disabled="publicLink.id === ''"
-            @click="deletePublicLink"
-          >
+          <NcButton type="tertiary" :aria-label="t('photos', 'Delete the public link')" :disabled="publicLink.id === ''"
+            @click="deletePublicLink">
             <NcLoadingIcon v-if="publicLink.id === ''" slot="icon" />
             <Close v-else slot="icon" />
           </NcButton>
         </template>
-        <NcButton
-          v-else
-          class="manage-collaborators__public-link-button"
-          @click="createPublicLinkForAlbum"
-        >
+        <NcButton v-else class="manage-collaborators__public-link-button" @click="createPublicLinkForAlbum">
           <Earth slot="icon" />
           {{ t("photos", "Share via public link") }}
         </NcButton>
@@ -207,7 +165,7 @@ export default defineComponent({
   data() {
     return {
       searchText: "",
-      availableCollaborators: {} as { [key: string]: Collaborator },
+      availableCollaborators: {} as { [key: string]: Collaborator; },
       selectedCollaboratorsKeys: [] as string[],
       currentSearchResults: [] as Collaborator[],
       loadingAlbum: false,
@@ -353,14 +311,13 @@ export default defineComponent({
      * @param {Collaborator} collaborator - A collaborator
      */
     indexCollaborators(
-      collaborators: { [s: string]: Collaborator },
+      collaborators: { [s: string]: Collaborator; },
       collaborator: Collaborator
     ) {
       return {
         ...collaborators,
-        [`${collaborator.type}${
-          collaborator.type === Type.SHARE_TYPE_LINK ? "" : ":"
-        }${collaborator.type === Type.SHARE_TYPE_LINK ? "" : collaborator.id}`]:
+        [`${collaborator.type}${collaborator.type === Type.SHARE_TYPE_LINK ? "" : ":"
+          }${collaborator.type === Type.SHARE_TYPE_LINK ? "" : collaborator.id}`]:
           collaborator,
       };
     },

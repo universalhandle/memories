@@ -2,11 +2,12 @@ import { emit, subscribe, unsubscribe } from "@nextcloud/event-bus";
 import { loadState } from "@nextcloud/initial-state";
 import axios from "@nextcloud/axios";
 import { API } from "../services/API";
+import { defineComponent } from "vue";
 
 const eventName = "memories:user-config-changed";
 const localSettings = ["squareThumbs", "showFaceRect"];
 
-export default {
+export default defineComponent({
   name: "UserConfig",
 
   data() {
@@ -83,4 +84,4 @@ export default {
       emit(eventName, { setting, value });
     },
   },
-};
+});

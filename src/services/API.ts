@@ -6,8 +6,11 @@ const gen = generateUrl;
 
 /** Add auth token to this URL */
 function tok(url: string) {
-  if (vuerouter.currentRoute.name === "folder-share") {
-    url = API.Q(url, `folder_share=${vuerouter.currentRoute.params.token}`);
+  if (vuerouter.currentRoute.value.name === "folder-share") {
+    url = API.Q(
+      url,
+      `folder_share=${vuerouter.currentRoute.value.params.token}`
+    );
   }
   return url;
 }

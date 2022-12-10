@@ -1,14 +1,11 @@
 <template>
-  <NcModal
-    :size="size"
-    @close="close"
-    :outTransition="true"
-    :style="{ width: isSidebarShown ? `calc(100% - ${sidebarWidth}px)` : null }"
-    :additionalTrapElements="trapElements"
-  >
+  <NcModal :size="size" @close="close" :outTransition="true"
+    :style="{ width: isSidebarShown ? `calc(100% - ${sidebarWidth}px)` : null }" :additionalTrapElements="trapElements">
     <div class="container">
       <div class="head">
-        <span> <slot name="title"></slot> </span>
+        <span>
+          <slot name="title"></slot>
+        </span>
       </div>
 
       <slot></slot>
@@ -125,7 +122,7 @@ export default defineComponent({
     margin-top: 10px;
     text-align: right;
 
-    > button {
+    >button {
       display: inline-block !important;
     }
   }

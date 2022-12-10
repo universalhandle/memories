@@ -1,11 +1,6 @@
 <template>
-  <router-link
-    draggable="false"
-    class="tag fill-block"
-    :class="{ face, error }"
-    :to="target"
-    @click.native="openTag(data)"
-  >
+  <router-link draggable="false" class="tag fill-block" :class="{ face, error }" :to="target"
+    @click.native="openTag(data)">
     <div class="bbl">
       <NcCounterBubble> {{ data.count }} </NcCounterBubble>
     </div>
@@ -16,13 +11,8 @@
 
     <div class="previews fill-block" ref="previews">
       <div class="img-outer">
-        <img
-          draggable="false"
-          class="fill-block"
-          :class="{ error }"
-          :src="previewUrl"
-          @error="data.flag |= c.FLAG_LOAD_FAIL"
-        />
+        <img draggable="false" class="fill-block" :class="{ error }" :src="previewUrl"
+          @error="data.flag |= c.FLAG_LOAD_FAIL" />
       </div>
     </div>
   </router-link>
@@ -163,19 +153,19 @@ img {
   text-overflow: ellipsis;
   line-height: 1em;
 
-  > .subtitle {
+  >.subtitle {
     font-size: 0.7em;
     margin-top: 2px;
     display: block;
   }
 
-  .tag.face > & {
+  .tag.face>& {
     top: unset;
     bottom: 10%;
     transform: unset;
   }
 
-  .tag.error > & {
+  .tag.error>& {
     color: unset;
   }
 
@@ -198,7 +188,7 @@ img {
   padding: 2px;
   box-sizing: border-box;
 
-  > .img-outer {
+  >.img-outer {
     background-color: var(--color-background-dark);
     border-radius: 10px;
     padding: 0;
@@ -209,7 +199,7 @@ img {
     display: inline-block;
     cursor: pointer;
 
-    > img {
+    >img {
       object-fit: cover;
       padding: 0;
       filter: brightness(60%);
@@ -219,6 +209,7 @@ img {
       &.error {
         display: none;
       }
+
       .tag:hover & {
         filter: brightness(100%);
       }

@@ -3,24 +3,13 @@
     <NcLoadingIcon v-if="loadingAlbums" class="loading-icon" />
 
     <ul class="albums-container">
-      <NcListItem
-        v-for="album in albums"
-        :key="album.album_id"
-        class="album"
-        :title="getAlbumName(album)"
-        :aria-label="
-          t('photos', 'Add selection to album {albumName}', {
-            albumName: getAlbumName(album),
-          })
-        "
-        @click="pickAlbum(album)"
-      >
+      <NcListItem v-for="album in albums" :key="album.album_id" class="album" :title="getAlbumName(album)" :aria-label="
+        t('photos', 'Add selection to album {albumName}', {
+          albumName: getAlbumName(album),
+        })
+      " @click="pickAlbum(album)">
         <template slot="icon">
-          <img
-            v-if="album.last_added_photo !== -1"
-            class="album__image"
-            :src="album.last_added_photo | toCoverUrl"
-          />
+          <img v-if="album.last_added_photo !== -1" class="album__image" :src="toCoverUrl(album.last_added_photo)" />
           <div v-else class="album__image album__image--placeholder">
             <ImageMultiple :size="32" />
           </div>
@@ -34,12 +23,8 @@
       </NcListItem>
     </ul>
 
-    <NcButton
-      :aria-label="t('photos', 'Create a new album.')"
-      class="new-album-button"
-      type="tertiary"
-      @click="showAlbumCreationForm = true"
-    >
+    <NcButton :aria-label="t('photos', 'Create a new album.')" class="new-album-button" type="tertiary"
+      @click="showAlbumCreationForm = true">
       <template #icon>
         <Plus />
       </template>
@@ -47,13 +32,8 @@
     </NcButton>
   </div>
 
-  <AlbumForm
-    v-else
-    :display-back-button="true"
-    :title="t('photos', 'New album')"
-    @back="showAlbumCreationForm = false"
-    @done="albumCreatedHandler"
-  />
+  <AlbumForm v-else :display-back-button="true" :title="t('photos', 'New album')" @back="showAlbumCreationForm = false"
+    @done="albumCreatedHandler" />
 </template>
 
 <script lang="ts">
@@ -85,18 +65,6 @@ export default defineComponent({
     NcLoadingIcon,
   },
 
-  filters: {
-    toCoverUrl(fileId: string) {
-      return getPreviewUrl(
-        {
-          fileid: Number(fileId),
-        } as IPhoto,
-        true,
-        256
-      );
-    },
-  },
-
   data() {
     return {
       showAlbumCreationForm: false,
@@ -110,6 +78,16 @@ export default defineComponent({
   },
 
   methods: {
+    toCoverUrl(fileId: number | string) {
+      return getPreviewUrl(
+        {
+          fileid: Number(fileId),
+        } as IPhoto,
+        true,
+        256
+      );
+    },
+
     albumCreatedHandler() {
       this.showAlbumCreationForm = false;
       this.loadAlbums();

@@ -15,45 +15,16 @@
       {{ longDateStr }}
 
       <div class="fields">
-        <NcTextField
-          :value.sync="year"
-          class="field"
-          @input="newestChange()"
-          :label="t('memories', 'Year')"
-          :label-visible="true"
-          :placeholder="t('memories', 'Year')"
-        />
-        <NcTextField
-          :value.sync="month"
-          class="field"
-          @input="newestChange()"
-          :label="t('memories', 'Month')"
-          :label-visible="true"
-          :placeholder="t('memories', 'Month')"
-        />
-        <NcTextField
-          :value.sync="day"
-          class="field"
-          @input="newestChange()"
-          :label="t('memories', 'Day')"
-          :label-visible="true"
-          :placeholder="t('memories', 'Day')"
-        />
-        <NcTextField
-          :value.sync="hour"
-          class="field"
-          @input="newestChange(true)"
-          :label="t('memories', 'Time')"
-          :label-visible="true"
-          :placeholder="t('memories', 'Hour')"
-        />
-        <NcTextField
-          :value.sync="minute"
-          class="field"
-          @input="newestChange(true)"
-          :label="t('memories', 'Minute')"
-          :placeholder="t('memories', 'Minute')"
-        />
+        <NcTextField :value.sync="year" class="field" @input="newestChange()" :label="t('memories', 'Year')"
+          :label-visible="true" :placeholder="t('memories', 'Year')" />
+        <NcTextField :value.sync="month" class="field" @input="newestChange()" :label="t('memories', 'Month')"
+          :label-visible="true" :placeholder="t('memories', 'Month')" />
+        <NcTextField :value.sync="day" class="field" @input="newestChange()" :label="t('memories', 'Day')"
+          :label-visible="true" :placeholder="t('memories', 'Day')" />
+        <NcTextField :value.sync="hour" class="field" @input="newestChange(true)" :label="t('memories', 'Time')"
+          :label-visible="true" :placeholder="t('memories', 'Hour')" />
+        <NcTextField :value.sync="minute" class="field" @input="newestChange(true)" :label="t('memories', 'Minute')"
+          :placeholder="t('memories', 'Minute')" />
       </div>
 
       <div v-if="photos.length > 1" class="oldest">
@@ -61,59 +32,35 @@
         {{ longDateStrLast }}
 
         <div class="fields">
-          <NcTextField
-            :value.sync="yearLast"
-            class="field"
-            :label="t('memories', 'Year')"
-            :label-visible="true"
-            :placeholder="t('memories', 'Year')"
-          />
-          <NcTextField
-            :value.sync="monthLast"
-            class="field"
-            :label="t('memories', 'Month')"
-            :label-visible="true"
-            :placeholder="t('memories', 'Month')"
-          />
-          <NcTextField
-            :value.sync="dayLast"
-            class="field"
-            :label="t('memories', 'Day')"
-            :label-visible="true"
-            :placeholder="t('memories', 'Day')"
-          />
-          <NcTextField
-            :value.sync="hourLast"
-            class="field"
-            :label="t('memories', 'Time')"
-            :label-visible="true"
-            :placeholder="t('memories', 'Hour')"
-          />
-          <NcTextField
-            :value.sync="minuteLast"
-            class="field"
-            :label="t('memories', 'Minute')"
-            :placeholder="t('memories', 'Minute')"
-          />
+          <NcTextField :value.sync="yearLast" class="field" :label="t('memories', 'Year')" :label-visible="true"
+            :placeholder="t('memories', 'Year')" />
+          <NcTextField :value.sync="monthLast" class="field" :label="t('memories', 'Month')" :label-visible="true"
+            :placeholder="t('memories', 'Month')" />
+          <NcTextField :value.sync="dayLast" class="field" :label="t('memories', 'Day')" :label-visible="true"
+            :placeholder="t('memories', 'Day')" />
+          <NcTextField :value.sync="hourLast" class="field" :label="t('memories', 'Time')" :label-visible="true"
+            :placeholder="t('memories', 'Hour')" />
+          <NcTextField :value.sync="minuteLast" class="field" :label="t('memories', 'Minute')"
+            :placeholder="t('memories', 'Minute')" />
         </div>
       </div>
 
       <div v-if="processing" class="info-pad">
         {{
-          t("memories", "Processing … {n}/{m}", {
-            n: photosDone,
-            m: photos.length,
-          })
+            t("memories", "Processing … {n}/{m}", {
+              n: photosDone,
+              m: photos.length,
+            })
         }}
       </div>
     </div>
 
     <div v-else>
       {{
-        t("memories", "Loading data … {n}/{m}", {
-          n: photosDone,
-          m: photos.length,
-        })
+    t("memories", "Loading data … {n}/{m}", {
+      n: photosDone,
+      m: photos.length,
+    })
       }}
     </div>
   </Modal>
@@ -254,7 +201,7 @@ export default defineComponent({
           this.minuteLast = dateLastNew.getUTCMinutes().toString();
           this.secondLast = dateLastNew.getUTCSeconds().toString();
         }
-      } catch (error) {}
+      } catch (error) { }
     },
 
     close() {

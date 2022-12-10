@@ -2,31 +2,25 @@
   <div>
     <div v-if="show" class="top-bar">
       <NcActions :inline="1">
-        <NcActionButton
-          :aria-label="t('memories', 'Cancel')"
-          @click="clearSelection()"
-        >
+        <NcActionButton :aria-label="t('memories', 'Cancel')" @click="clearSelection()">
           {{ t("memories", "Cancel") }}
-          <template #icon> <CloseIcon :size="20" /> </template>
+          <template #icon>
+            <CloseIcon :size="20" />
+          </template>
         </NcActionButton>
       </NcActions>
 
       <div class="text">
         {{
-          n("memories", "{n} selected", "{n} selected", size, {
-            n: size,
-          })
+            n("memories", "{n} selected", "{n} selected", size, {
+              n: size,
+            })
         }}
       </div>
 
       <NcActions :inline="1">
-        <NcActionButton
-          v-for="action of getActions()"
-          :key="action.name"
-          :aria-label="action.name"
-          close-after-click
-          @click="click(action)"
-        >
+        <NcActionButton v-for="action of getActions()" :key="action.name" :aria-label="action.name" close-after-click
+          @click="click(action)">
           {{ action.name }}
           <template #icon>
             <component :is="action.icon" :size="20" />
@@ -38,11 +32,7 @@
     <!-- Selection Modals -->
     <EditDate ref="editDate" @refresh="refresh" />
     <EditExif ref="editExif" @refresh="refresh" />
-    <FaceMoveModal
-      ref="faceMoveModal"
-      @moved="deletePhotos"
-      :updateLoading="updateLoading"
-    />
+    <FaceMoveModal ref="faceMoveModal" @moved="deletePhotos" :updateLoading="updateLoading" />
     <AddToAlbumModal ref="addToAlbumModal" @added="clearSelection" />
   </div>
 </template>
@@ -103,7 +93,7 @@ export default defineComponent({
   },
 
   props: {
-    heads: Object as PropType<{ [dayid: number]: IHeadRow }>,
+    heads: Object as PropType<{ [dayid: number]: IHeadRow; }>,
     /** List of rows for multi selection */
     rows: Array as PropType<IRow[]>,
     /** Rows are in ascending order (desc is normal) */
@@ -840,8 +830,8 @@ export default defineComponent({
 
       // Run query
       for await (let delIds of dav.removeFaceImages(
-        user,
-        name,
+        <string>user,
+        <string>name,
         Array.from(selection.values())
       )) {
         const delPhotos = delIds
@@ -879,7 +869,7 @@ export default defineComponent({
   vertical-align: middle;
   z-index: 100;
 
-  > .text {
+  >.text {
     flex-grow: 1;
     line-height: 42px;
     padding-left: 8px;

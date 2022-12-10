@@ -3,7 +3,9 @@
     <NcActions>
       <NcActionButton :aria-label="t('memories', 'Back')" @click="back()">
         {{ t("memories", "Back") }}
-        <template #icon> <BackIcon :size="20" /> </template>
+        <template #icon>
+          <BackIcon :size="20" />
+        </template>
       </NcActionButton>
     </NcActions>
     <span class="name">{{ name }}</span>
@@ -44,7 +46,7 @@ export default defineComponent({
 
   methods: {
     createMatter() {
-      this.name = this.$route.params.name || "";
+      this.name = <string>this.$route.params.name || "";
     },
 
     back() {

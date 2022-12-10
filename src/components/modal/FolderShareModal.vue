@@ -1,10 +1,5 @@
 <template>
-  <Modal
-    @close="close"
-    size="normal"
-    v-if="show"
-    :sidebar="!isRoot ? this.folderPath : null"
-  >
+  <Modal @close="close" size="normal" v-if="show" :sidebar="!isRoot ? folderPath : null">
     <template #title>
       {{ t("memories", "Share Folder") }}
     </template>
@@ -15,21 +10,15 @@
     <div v-else>
       {{ t("memories", "Use the sidebar to share this folder.") }} <br />
       {{
-        t(
-          "memories",
-          "If you create a public link share, click on refresh and a corresponding link to Memories will be shown below."
-        )
+          t(
+            "memories",
+            "If you create a public link share, click on refresh and a corresponding link to Memories will be shown below."
+          )
       }}
     </div>
 
     <div class="links">
-      <a
-        v-for="link of links"
-        :key="link.url"
-        :href="link.url"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a v-for="link of links" :key="link.url" :href="link.url" target="_blank" rel="noopener noreferrer">
         {{ link.url }}
       </a>
     </div>
@@ -64,12 +53,12 @@ export default defineComponent({
     return {
       show: false,
       folderPath: "",
-      links: [] as { url: string }[],
+      links: [] as { url: string; }[],
     };
   },
 
   computed: {
-    isRoot() {
+    isRoot(): boolean {
       return this.folderPath === "/" || this.folderPath === "";
     },
   },
@@ -111,6 +100,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .links {
   margin-top: 1em;
+
   a {
     display: block;
     margin-bottom: 0.2em;

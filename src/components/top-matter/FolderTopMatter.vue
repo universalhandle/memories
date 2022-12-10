@@ -6,23 +6,18 @@
           <HomeIcon :size="20" />
         </template>
       </NcBreadcrumb>
-      <NcBreadcrumb
-        v-for="folder in topMatter.list"
-        :key="folder.path"
-        :title="folder.text"
-        :to="{ name: 'folders', params: { path: folder.path } }"
-      />
+      <NcBreadcrumb v-for="folder in topMatter.list" :key="folder.path" :title="folder.text"
+        :to="{ name: 'folders', params: { path: folder.path } }" />
     </NcBreadcrumbs>
 
     <div class="right-actions">
       <NcActions :inline="1">
-        <NcActionButton
-          :aria-label="t('memories', 'Share folder')"
-          @click="$refs.shareModal.open(false)"
-          close-after-click
-        >
+        <NcActionButton :aria-label="t('memories', 'Share folder')" @click="$refs.shareModal.open(false)"
+          close-after-click>
           {{ t("memories", "Share folder") }}
-          <template #icon> <ShareIcon :size="20" /> </template>
+          <template #icon>
+            <ShareIcon :size="20" />
+          </template>
         </NcActionButton>
       </NcActions>
     </div>
@@ -110,6 +105,7 @@ export default defineComponent({
   .right-actions {
     margin-right: 40px;
     z-index: 50;
+
     @media (max-width: 768px) {
       margin-right: 10px;
     }

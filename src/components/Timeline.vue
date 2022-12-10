@@ -1,14 +1,10 @@
 <template>
-  <div
-    class="container"
-    ref="container"
-    :class="{ 'icon-loading': loading > 0 }"
-  >
+  <div class="container" ref="container" :class="{ 'icon-loading': loading > 0 }">
     <!-- Static top matter -->
     <TopMatter ref="topmatter" />
 
     <!-- No content found and nothing is loading -->
-    <NcEmptyContent
+    <!-- <NcEmptyContent
       title="Nothing to show here"
       :description="emptyViewDescription"
       v-if="loading === 0 && list.length === 0"
@@ -18,49 +14,28 @@
         <ArchiveIcon v-else-if="routeIsArchive" />
         <ImageMultipleIcon v-else />
       </template>
-    </NcEmptyContent>
+    </NcEmptyContent> -->
 
     <!-- Main recycler view for rows -->
-    <RecycleScroller
-      ref="recycler"
-      class="recycler"
-      :class="{ empty: list.length === 0 }"
-      :items="list"
-      :emit-update="true"
-      :buffer="800"
-      :skipHover="true"
-      key-field="id"
-      size-field="size"
-      type-field="type"
-      :updateInterval="100"
-      @update="scrollChange"
-      @resize="handleResizeWithDelay"
-    >
+    <RecycleScroller ref="recycler" class="recycler" :class="{ empty: list.length === 0 }" :items="list"
+      :emit-update="true" :buffer="800" :skipHover="true" key-field="id" size-field="size" type-field="type"
+      :updateInterval="100" @update="scrollChange" @resize="handleResizeWithDelay">
       <template #before>
         <!-- Show dynamic top matter, name of the view -->
         <div class="recycler-before" ref="recyclerBefore">
-          <div class="text" v-show="!$refs.topmatter.type && list.length > 0">
+          <div class="text" v-show="!(<any>$refs.topmatter)?.type && list.length > 0">
             {{ viewName }}
           </div>
 
-          <OnThisDay
-            v-if="routeIsBase"
-            :key="config_timelinePath"
-            :viewer="$refs.viewer"
-            @load="scrollerManager.adjust()"
-          >
+          <OnThisDay v-if="routeIsBase" :key="config_timelinePath" :viewer="$refs.viewer"
+            @load="scrollerManager.adjust()">
           </OnThisDay>
         </div>
       </template>
 
       <template v-slot="{ item, index }">
-        <div
-          v-if="item.type === 0"
-          class="head-row"
-          :class="{ selected: item.selected }"
-          :style="{ height: item.size + 'px' }"
-          :key="item.id"
-        >
+        <div v-if="item.type === 0" class="head-row" :class="{ selected: item.selected }"
+          :style="{ height: item.size + 'px' }" :key="item.id">
           <div class="super" v-if="item.super !== undefined">
             {{ item.super }}
           </div>
@@ -71,72 +46,34 @@
         </div>
 
         <template v-else>
-          <div
-            class="photo"
-            v-for="photo of item.photos"
-            :key="photo.key"
-            :style="{
-              height: photo.dispH + 'px',
-              width: photo.dispW + 'px',
-              transform: `translate(${photo.dispX}px, ${photo.dispY}px`,
-            }"
-          >
-            <Folder
-              v-if="photo.flag & c.FLAG_IS_FOLDER"
-              :data="photo"
-              :key="photo.fileid"
-            />
+          <div class="photo" v-for="photo of item.photos" :key="photo.key" :style="{
+            height: photo.dispH + 'px',
+            width: photo.dispW + 'px',
+            transform: `translate(${photo.dispX}px, ${photo.dispY}px`,
+          }">
+            <Folder v-if="photo.flag & c.FLAG_IS_FOLDER" :data="photo" />
 
-            <Tag
-              v-else-if="photo.flag & c.FLAG_IS_TAG"
-              :data="photo"
-              :key="photo.fileid"
-            />
+            <Tag v-else-if="photo.flag & c.FLAG_IS_TAG" :data="photo" />
 
-            <Photo
-              v-else
-              :data="photo"
-              :day="item.day"
-              :key="photo.fileid"
-              @select="selectionManager.selectPhoto"
-              @pointerdown="selectionManager.clickPhoto(photo, $event, index)"
-              @touchstart="
+            <Photo v-else :data="photo" :day="item.day" @select="selectionManager.selectPhoto"
+              @pointerdown="selectionManager.clickPhoto(photo, $event, index)" @touchstart="
                 selectionManager.touchstartPhoto(photo, $event, index)
-              "
-              @touchend="selectionManager.touchendPhoto(photo, $event, index)"
-              @touchmove="selectionManager.touchmovePhoto(photo, $event, index)"
-            />
+              " @touchend="selectionManager.touchendPhoto(photo, $event, index)"
+              @touchmove="selectionManager.touchmovePhoto(photo, $event, index)" />
           </div>
         </template>
       </template>
     </RecycleScroller>
 
     <!-- Managers -->
-    <ScrollerManager
-      ref="scrollerManager"
-      :rows="list"
-      :height="scrollerHeight"
-      :recycler="$refs.recycler"
-      :recyclerBefore="$refs.recyclerBefore"
-    />
+    <ScrollerManager ref="scrollerManager" :rows="list" :height="scrollerHeight" :recycler="$refs.recycler"
+      :recyclerBefore="($refs.recyclerBefore as any)" />
 
-    <SelectionManager
-      ref="selectionManager"
-      :heads="heads"
-      :rows="list"
-      :isreverse="isMonthView"
-      :recycler="$refs.recycler"
-      @refresh="softRefresh"
-      @delete="deleteFromViewWithAnimation"
-      @updateLoading="updateLoading"
-    />
+    <SelectionManager ref="selectionManager" :heads="heads" :rows="list" :isreverse="isMonthView"
+      :recycler="$refs.recycler" @refresh="softRefresh" @delete="deleteFromViewWithAnimation"
+      @updateLoading="updateLoading" />
 
-    <Viewer
-      ref="viewer"
-      @deleted="deleteFromViewWithAnimation"
-      @fetchDay="fetchDay"
-      @updateLoading="updateLoading"
-    />
+    <Viewer ref="viewer" @deleted="deleteFromViewWithAnimation" @fetchDay="fetchDay" @updateLoading="updateLoading" />
   </div>
 </template>
 
@@ -201,7 +138,7 @@ export default defineComponent({
       /** Computed number of columns */
       numCols: 0,
       /** Header rows for dayId key */
-      heads: {} as { [dayid: number]: IHeadRow },
+      heads: {} as { [dayid: number]: IHeadRow; },
 
       /** Computed row height */
       rowHeight: 100,
@@ -230,15 +167,15 @@ export default defineComponent({
       state: Math.random(),
 
       /** Selection manager component */
-      selectionManager: null as SelectionManager & any,
+      selectionManager: null as InstanceType<typeof SelectionManager>,
       /** Scroller manager component */
-      scrollerManager: null as ScrollerManager & any,
+      scrollerManager: null as InstanceType<typeof ScrollerManager>,
     };
   },
 
   mounted() {
-    this.selectionManager = this.$refs.selectionManager;
-    this.scrollerManager = this.$refs.scrollerManager;
+    this.selectionManager = <any>this.$refs.selectionManager;
+    this.scrollerManager = <any>this.$refs.scrollerManager;
     this.routeChange(this.$route);
   },
 
@@ -265,20 +202,20 @@ export default defineComponent({
   },
 
   computed: {
-    routeIsBase() {
+    routeIsBase(): boolean {
       return this.$route.name === "timeline";
     },
-    routeIsPeople() {
-      return ["recognize", "facerecognition"].includes(this.$route.name);
+    routeIsPeople(): boolean {
+      return ["recognize", "facerecognition"].includes(<string>this.$route.name);
     },
-    routeIsArchive() {
+    routeIsArchive(): boolean {
       return this.$route.name === "archive";
     },
-    isMonthView() {
+    isMonthView(): boolean {
       return this.$route.name === "albums";
     },
     /** Get view name for dynamic top matter */
-    viewName() {
+    viewName(): string {
       switch (this.$route.name) {
         case "timeline":
           return this.t("memories", "Your Timeline");
@@ -301,7 +238,7 @@ export default defineComponent({
           return "";
       }
     },
-    emptyViewDescription() {
+    emptyViewDescription(): string {
       switch (this.$route.name) {
         case "facerecognition":
           if (this.config_facerecognitionEnabled)
@@ -655,7 +592,7 @@ export default defineComponent({
         this.$route.params.name
       ) {
         query.set(
-          this.$route.name, // "recognize" or "facerecognition"
+          <string>this.$route.name, // "recognize" or "facerecognition"
           `${this.$route.params.user}/${this.$route.params.name}`
         );
 
@@ -667,7 +604,7 @@ export default defineComponent({
 
       // Tags
       if (this.$route.name === "tags" && this.$route.params.name) {
-        query.set("tag", this.$route.params.name);
+        query.set("tag", <string>this.$route.params.name);
       }
 
       // Albums
@@ -718,7 +655,7 @@ export default defineComponent({
     /** Fetch timeline main call */
     async fetchDays(noCache = false) {
       const url = API.Q(API.DAYS(), this.getQuery());
-      const cacheUrl = this.$route.name + url;
+      const cacheUrl = <string>this.$route.name + url;
 
       // Try cache first
       let cache: IDay[];
@@ -1349,13 +1286,15 @@ export default defineComponent({
   padding-left: 3px;
   font-size: 0.9em;
 
-  > div {
+  >div {
     position: relative;
+
     &.super {
       font-size: 1.4em;
       font-weight: bold;
       margin-bottom: 4px;
     }
+
     &.main {
       display: inline-block;
       font-weight: 600;
@@ -1373,6 +1312,7 @@ export default defineComponent({
     border-radius: 50%;
     cursor: pointer;
   }
+
   .name {
     display: block;
     transition: transform 0.2s ease;
@@ -1386,10 +1326,12 @@ export default defineComponent({
       display: flex;
       opacity: 0.7;
     }
+
     .name {
       transform: translateX(24px);
     }
   }
+
   &.selected .select {
     opacity: 1;
     color: var(--color-primary);
@@ -1403,16 +1345,20 @@ export default defineComponent({
 /** Static and dynamic top matter */
 .top-matter {
   padding-top: 4px;
+
   @include phone {
     padding-left: 40px;
   }
 }
+
 .recycler-before {
   width: 100%;
-  > .text {
+
+  >.text {
     font-size: 1.2em;
     padding-top: 13px;
     padding-left: 8px;
+
     @include phone {
       padding-left: 48px;
     }

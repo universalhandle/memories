@@ -23,42 +23,20 @@
 <template>
   <div>
     <label for="timeline-path">{{ t("memories", "Timeline Path") }}</label>
-    <input
-      id="timeline-path"
-      @click="chooseTimelinePath"
-      v-model="config_timelinePath"
-      type="text"
-    />
+    <input id="timeline-path" @click="chooseTimelinePath" v-model="config_timelinePath" type="text" />
 
     <label for="folders-path">{{ t("memories", "Folders Path") }}</label>
-    <input
-      id="folders-path"
-      @click="chooseFoldersPath"
-      v-model="config_foldersPath"
-      type="text"
-    />
+    <input id="folders-path" @click="chooseFoldersPath" v-model="config_foldersPath" type="text" />
 
-    <NcCheckboxRadioSwitch
-      :checked.sync="config_showHidden"
-      @update:checked="updateShowHidden"
-      type="switch"
-    >
+    <NcCheckboxRadioSwitch :checked.sync="config_showHidden" @update:checked="updateShowHidden" type="switch">
       {{ t("memories", "Show hidden folders") }}
     </NcCheckboxRadioSwitch>
 
-    <NcCheckboxRadioSwitch
-      :checked.sync="config_squareThumbs"
-      @update:checked="updateSquareThumbs"
-      type="switch"
-    >
+    <NcCheckboxRadioSwitch :checked.sync="config_squareThumbs" @update:checked="updateSquareThumbs" type="switch">
       {{ t("memories", "Square grid mode") }}
     </NcCheckboxRadioSwitch>
 
-    <MultiPathSelectionModal
-      ref="multiPathModal"
-      :title="pathSelTitle"
-      @close="saveTimelinePath"
-    />
+    <MultiPathSelectionModal ref="multiPathModal" :title="pathSelTitle" @close="saveTimelinePath" />
   </div>
 </template>
 
@@ -86,7 +64,7 @@ export default defineComponent({
   },
 
   computed: {
-    pathSelTitle() {
+    pathSelTitle(): string {
       return this.t("memories", "Choose Timeline Paths");
     },
   },

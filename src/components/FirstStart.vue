@@ -9,7 +9,7 @@
         <div class="text">
           {{ t("memories", "A better photos experience awaits you") }} <br />
           {{
-            t("memories", "Choose the root folder of your timeline to begin")
+              t("memories", "Choose the root folder of your timeline to begin")
           }}
         </div>
 
@@ -160,6 +160,7 @@ export default defineComponent({
 
   transition: opacity 1s ease;
   opacity: 0;
+
   &.show {
     opacity: 1;
   }
@@ -174,7 +175,7 @@ export default defineComponent({
     width: 100%;
     filter: var(--background-invert-if-dark);
 
-    > img {
+    >img {
       max-width: calc(100vw - 40px);
     }
   }

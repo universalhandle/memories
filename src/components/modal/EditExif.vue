@@ -5,28 +5,15 @@
     </template>
 
     <template #buttons>
-      <NcButton
-        @click="save"
-        class="button"
-        type="error"
-        v-if="exif"
-        :disabled="processing"
-      >
+      <NcButton @click="save" class="button" type="error" v-if="exif" :disabled="processing">
         {{ t("memories", "Update Exif") }}
       </NcButton>
     </template>
 
     <div v-if="exif">
       <div class="fields">
-        <NcTextField
-          v-for="field of fields"
-          :key="field.field"
-          :value.sync="exif[field.field]"
-          class="field"
-          :label="field.label"
-          :label-visible="true"
-          :placeholder="field.label"
-        />
+        <NcTextField v-for="field of fields" :key="field.field" :value.sync="exif[field.field]" class="field"
+          :label="field.label" :label-visible="true" :placeholder="field.label" />
       </div>
     </div>
   </Modal>
@@ -168,6 +155,7 @@ export default defineComponent({
   .field {
     margin-bottom: 8px;
   }
+
   :deep label {
     font-size: 0.8em;
     padding: 0 !important;

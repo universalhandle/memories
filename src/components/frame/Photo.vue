@@ -1,19 +1,11 @@
 <template>
-  <div
-    class="p-outer fill-block"
-    :class="{
-      selected: data.flag & c.FLAG_SELECTED,
-      placeholder: data.flag & c.FLAG_PLACEHOLDER,
-      leaving: data.flag & c.FLAG_LEAVING,
-      error: data.flag & c.FLAG_LOAD_FAIL,
-    }"
-  >
-    <CheckCircle
-      :size="18"
-      class="select"
-      v-if="!(data.flag & c.FLAG_PLACEHOLDER)"
-      @click="toggleSelect"
-    />
+  <div class="p-outer fill-block" :class="{
+    selected: data.flag & c.FLAG_SELECTED,
+    placeholder: data.flag & c.FLAG_PLACEHOLDER,
+    leaving: data.flag & c.FLAG_LEAVING,
+    error: data.flag & c.FLAG_LOAD_FAIL,
+  }">
+    <CheckCircle :size="18" class="select" v-if="!(data.flag & c.FLAG_PLACEHOLDER)" @click="toggleSelect" />
 
     <div class="video" v-if="data.flag & c.FLAG_IS_VIDEO">
       <span v-if="data.video_duration" class="time">
@@ -22,45 +14,20 @@
       <Video :size="22" />
     </div>
 
-    <div
-      class="livephoto"
-      @mouseenter.passive="playVideo"
-      @mouseleave.passive="stopVideo"
-    >
+    <div class="livephoto" @mouseenter.passive="playVideo" @mouseleave.passive="stopVideo">
       <LivePhoto :size="22" v-if="data.liveid" />
     </div>
 
     <Star :size="22" v-if="data.flag & c.FLAG_IS_FAVORITE" />
 
-    <div
-      class="img-outer fill-block"
-      :class="{
-        'memories-livephoto': data.liveid,
-      }"
-      @contextmenu="contextmenu"
-      @pointerdown.passive="$emit('pointerdown', $event)"
-      @touchstart.passive="$emit('touchstart', $event)"
-      @touchmove="$emit('touchmove', $event)"
-      @touchend.passive="$emit('touchend', $event)"
-      @touchcancel.passive="$emit('touchend', $event)"
-    >
-      <img
-        ref="img"
-        :class="['fill-block', `memories-thumb-${data.key}`]"
-        draggable="false"
-        :src="src"
-        :key="data.fileid"
-        @load="load"
-        @error="error"
-      />
-      <video
-        ref="video"
-        v-if="videoUrl"
-        :src="videoUrl"
-        preload="none"
-        muted
-        playsinline
-      />
+    <div class="img-outer fill-block" :class="{
+      'memories-livephoto': data.liveid,
+    }" @contextmenu="contextmenu" @pointerdown.passive="$emit('pointerdown', $event)"
+      @touchstart.passive="$emit('touchstart', $event)" @touchmove="$emit('touchmove', $event)"
+      @touchend.passive="$emit('touchend', $event)" @touchcancel.passive="$emit('touchend', $event)">
+      <img ref="img" :class="['fill-block', `memories-thumb-${data.key}`]" draggable="false" :src="src"
+        :key="data.fileid" @load="load" @error="error" />
+      <video ref="video" v-if="videoUrl" :src="videoUrl" preload="none" muted playsinline />
       <div class="overlay fill-block" />
     </div>
   </div>
@@ -193,7 +160,7 @@ export default defineComponent({
         size =
           Math.floor(
             (base * Math.max(this.data.w, this.data.h)) /
-              Math.min(this.data.w, this.data.h)
+            Math.min(this.data.w, this.data.h)
           ) - 1;
       }
 
@@ -275,12 +242,14 @@ export default defineComponent({
 /* Container and selection */
 .p-outer {
   padding: 2px;
+
   @media (max-width: 768px) {
     padding: 1px;
   }
 
-  transition: background-color 0.15s ease, opacity 0.2s ease-in,
-    transform 0.2s ease-in;
+  transition: background-color 0.15s ease,
+  opacity 0.2s ease-in,
+  transform 0.2s ease-in;
 
   &.leaving {
     transform: scale(0.9);
@@ -293,6 +262,7 @@ export default defineComponent({
   }
 
   --icon-dist: 8px;
+
   @media (max-width: 768px) {
     --icon-dist: 4px;
   }
@@ -312,13 +282,15 @@ $icon-size: $icon-half-size * 2;
   cursor: pointer;
 
   display: none;
+
   @media (hover: hover) {
-    .p-outer:hover > & {
+    .p-outer:hover>& {
       display: flex;
     }
   }
 
   opacity: 0.7;
+
   &:hover,
   .p-outer.selected & {
     opacity: 1;
@@ -331,13 +303,15 @@ $icon-size: $icon-half-size * 2;
   }
 
   filter: invert(1) brightness(100);
-  .p-outer.selected > & {
+
+  .p-outer.selected>& {
     display: flex;
     filter: invert(0);
     background-color: white;
     color: var(--color-primary);
   }
 }
+
 .video,
 .star-icon,
 .livephoto {
@@ -347,12 +321,14 @@ $icon-size: $icon-half-size * 2;
   transition: transform 0.15s ease;
   filter: invert(1) brightness(100);
 }
+
 .video,
 .livephoto {
   position: absolute;
   top: var(--icon-dist);
   right: var(--icon-dist);
-  .p-outer.selected > & {
+
+  .p-outer.selected>& {
     transform: translate(-$icon-size, $icon-size);
   }
 
@@ -366,13 +342,16 @@ $icon-size: $icon-half-size * 2;
     margin-right: 3px;
   }
 }
+
 .livephoto {
   pointer-events: auto;
 }
+
 .star-icon {
   bottom: var(--icon-dist);
   left: var(--icon-dist);
-  .p-outer.selected > & {
+
+  .p-outer.selected>& {
     transform: translate($icon-size, -$icon-size);
   }
 }
@@ -384,16 +363,17 @@ div.img-outer {
   padding: 0;
 
   transition: padding 0.15s ease;
-  .p-outer.selected > & {
+
+  .p-outer.selected>& {
     padding: calc(var(--icon-dist) + $icon-half-size);
   }
 
-  .p-outer.placeholder > & {
+  .p-outer.placeholder>& {
     background-color: var(--color-background-dark);
     background-clip: content-box, padding-box;
   }
 
-  > img {
+  >img {
     filter: contrast(1.05); // most real world images are a bit overexposed
     background-clip: content-box;
     object-fit: cover;
@@ -405,20 +385,21 @@ div.img-outer {
     user-select: none;
     transition: border-radius 0.1s ease-in, var(--livephoto-img-transition);
 
-    .p-outer.placeholder > & {
+    .p-outer.placeholder>& {
       display: none;
     }
+
     .p-outer.error & {
       object-fit: contain;
     }
   }
 
-  > video {
+  >video {
     pointer-events: none;
     object-fit: cover;
   }
 
-  > .overlay {
+  >.overlay {
     pointer-events: none;
     position: absolute;
     top: 0;
@@ -427,16 +408,17 @@ div.img-outer {
 
     display: none;
     transition: border-radius 0.1s ease-in;
+
     @media (hover: hover) {
-      .p-outer:not(.selected):hover > & {
+      .p-outer:not(.selected):hover>& {
         display: block;
       }
     }
   }
 
-  > * {
+  >* {
     @media (max-width: 768px) {
-      .selected > & {
+      .selected>& {
         border-radius: $icon-size;
         border-top-left-radius: 0;
       }

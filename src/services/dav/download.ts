@@ -48,8 +48,8 @@ export async function downloadFilesByPhotos(photos: IPhoto[]) {
 /** Get URL to download one file (e.g. for video streaming) */
 export function getDownloadLink(photo: IPhoto) {
   // Check if public
-  if (vuerouter.currentRoute.name === "folder-share") {
-    const token = window.vuerouter.currentRoute.params.token;
+  if (vuerouter.currentRoute.value.name === "folder-share") {
+    const token = window.vuerouter.currentRoute.value.params.token;
     // TODO: allow proper dav access without the need of basic auth
     // https://github.com/nextcloud/server/issues/19700
     return generateUrl(`/s/${token}/download?path={dirname}&files={basename}`, {
@@ -59,12 +59,12 @@ export function getDownloadLink(photo: IPhoto) {
   }
 
   // Check if albums
-  const route = vuerouter.currentRoute;
+  const route = vuerouter.currentRoute.value;
   if (route.name === "albums") {
     const fInfos = getAlbumFileInfos(
       [photo],
-      route.params.user,
-      route.params.name
+      route.params.user as string,
+      route.params.name as string
     );
     if (fInfos.length) {
       return generateUrl(`/remote.php/dav${fInfos[0].originalFilename}`);
