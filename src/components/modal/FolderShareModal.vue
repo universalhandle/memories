@@ -78,7 +78,7 @@ export default class FolderShareModal extends Mixins(GlobalMixin, UserConfig) {
   public open() {
     this.folderPath = utils.getFolderRoutePath(this.config_foldersPath);
     this.show = true;
-    globalThis.OCA.Files.Sidebar.setActiveTab("sharing");
+    globalThis.OCA.Files?.Sidebar?.setActiveTab("sharing");
     this.refreshUrls();
   }
 

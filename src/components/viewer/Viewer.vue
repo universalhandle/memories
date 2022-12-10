@@ -969,8 +969,8 @@ export default class Viewer extends Mixins(GlobalMixin) {
   private async openSidebar(photo?: IPhoto) {
     const fInfo = await dav.getFiles([photo || this.currentPhoto]);
     globalThis.OCA?.Files?.Sidebar?.setFullScreenMode?.(true);
-    globalThis.OCA.Files.Sidebar.setActiveTab("memories-metadata");
-    globalThis.OCA.Files.Sidebar.open(fInfo[0].filename);
+    globalThis.OCA.Files?.Sidebar?.setActiveTab("memories-metadata");
+    globalThis.OCA.Files?.Sidebar?.open(fInfo[0].filename);
   }
 
   private async updateSizeWithoutAnim() {

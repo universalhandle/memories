@@ -1,5 +1,7 @@
 /// <reference types="@nextcloud/typings" />
 
+import "./bootstrap";
+
 import "reflect-metadata";
 import Vue from "vue";
 import VueVirtualScroller from "vue-virtual-scroller";
@@ -70,21 +72,21 @@ Vue.use(VueVirtualScroller);
 // TODO: remove when we have a proper fileinfo standalone library
 // original scripts are loaded from
 // https://github.com/nextcloud/server/blob/5bf3d1bb384da56adbf205752be8f840aac3b0c5/lib/private/legacy/template.php#L120-L122
-window.addEventListener("DOMContentLoaded", () => {
-  if (!globalThis.OCA.Files) {
-    globalThis.OCA.Files = {};
-  }
-  // register unused client for the sidebar to have access to its parser methods
-  Object.assign(
-    globalThis.OCA.Files,
-    {
-      App: {
-        fileList: { filesClient: (<any>globalThis.OC.Files).getClient() },
-      },
-    },
-    globalThis.OCA.Files
-  );
-});
+// window.addEventListener("DOMContentLoaded", () => {
+//   if (!globalThis.OCA.Files) {
+//     globalThis.OCA.Files = {};
+//   }
+//   // register unused client for the sidebar to have access to its parser methods
+//   Object.assign(
+//     globalThis.OCA.Files,
+//     {
+//       App: {
+//         fileList: { filesClient: (<any>globalThis.OC.Files).getClient() },
+//       },
+//     },
+//     globalThis.OCA.Files
+//   );
+// });
 
 export default new Vue({
   el: "#content",

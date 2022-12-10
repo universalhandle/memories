@@ -57,6 +57,14 @@ class PageController extends Controller
             return null;
         }
 
+        // send html page
+        if ($this->request->getParam('ionic')) {
+            header('Content-Type: text/html; charset=utf-8');
+            header('Content-Security-Policy: default-src \'self\' \'unsafe-eval\' \'unsafe-inline\' data: blob: filesystem:; img-src * data: blob: filesystem:; media-src * data: blob: filesystem:; connect-src * data: blob: filesystem:; style-src * \'unsafe-inline\' data: blob: filesystem:; font-src * data: blob: filesystem:; frame-src * data: blob: filesystem:; worker-src * data: blob: filesystem:; object-src * data: blob: filesystem:;');
+            readfile(__DIR__.'/../../src/index.html');
+            exit;
+        }
+
         // Scripts
         Util::addScript($this->appName, 'memories-main');
         $this->eventDispatcher->dispatchTyped(new LoadSidebar());

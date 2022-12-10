@@ -1,55 +1,43 @@
 <template>
   <FirstStart v-if="isFirstStart" />
 
-  <NcContent
-    app-name="memories"
-    v-else
-    :class="{
-      'remove-gap': removeOuterGap,
-    }"
-  >
-    <NcAppNavigation v-if="showNavigation" ref="nav">
-      <template id="app-memories-navigation" #list>
-        <NcAppNavigationItem
+  <UiContent app-name="memories" v-else>
+    <UiNavigation v-if="showNavigation" ref="nav">
+      <template #list>
+        <UiNavigationItem
           v-for="item in navItems"
           :key="item.name"
           :to="{ name: item.name }"
           :title="item.title"
           @click="linkClick"
-          exact
         >
           <component :is="item.icon" slot="icon" :size="20" />
-        </NcAppNavigationItem>
+        </UiNavigationItem>
       </template>
 
       <template #footer>
-        <NcAppNavigationSettings :title="t('memories', 'Settings')">
+        <UiNavigationSettings :title="t('memories', 'Settings')">
           <Settings />
-        </NcAppNavigationSettings>
+        </UiNavigationSettings>
       </template>
-    </NcAppNavigation>
+    </UiNavigation>
 
-    <NcAppContent>
-      <div class="outer">
-        <router-view />
-      </div>
-    </NcAppContent>
-  </NcContent>
+    <UiAppContent>
+      <router-view />
+    </UiAppContent>
+  </UiContent>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Watch } from "vue-property-decorator";
 
-import NcContent from "@nextcloud/vue/dist/Components/NcContent";
-import NcAppContent from "@nextcloud/vue/dist/Components/NcAppContent";
-import NcAppNavigation from "@nextcloud/vue/dist/Components/NcAppNavigation";
-const NcAppNavigationItem = () =>
-  import("@nextcloud/vue/dist/Components/NcAppNavigationItem");
-const NcAppNavigationSettings = () =>
-  import("@nextcloud/vue/dist/Components/NcAppNavigationSettings");
+import UiContent from "./components/ui/UiContent.vue";
+import UiAppContent from "./components/ui/UiAppContent.vue";
+import UiNavigation from "./components/ui/UiNavigation.vue";
+import UiNavigationItem from "./components/ui/UiNavigationItem.vue";
+import UiNavigationSettings from "./components/ui/UiNavigationSettings.vue";
 
 import { generateUrl } from "@nextcloud/router";
-import { getCurrentUser } from "@nextcloud/auth";
 import { translate as t } from "@nextcloud/l10n";
 
 import Timeline from "./components/Timeline.vue";
@@ -72,11 +60,11 @@ import MapIcon from "vue-material-design-icons/Map.vue";
 
 @Component({
   components: {
-    NcContent,
-    NcAppContent,
-    NcAppNavigation,
-    NcAppNavigationItem,
-    NcAppNavigationSettings,
+    UiContent,
+    UiAppContent,
+    UiNavigation,
+    UiNavigationItem,
+    UiNavigationSettings,
 
     Timeline,
     Settings,
@@ -164,11 +152,6 @@ export default class App extends Mixins(GlobalMixin, UserConfig) {
 
   private navItems = [];
 
-  get ncVersion() {
-    const version = (<any>window.OC).config.version.split(".");
-    return Number(version[0]);
-  }
-
   get recognize() {
     if (!this.config_recognizeEnabled) {
       return false;
@@ -199,10 +182,6 @@ export default class App extends Mixins(GlobalMixin, UserConfig) {
 
   get showAlbums() {
     return this.config_albumsEnabled;
-  }
-
-  get removeOuterGap() {
-    return this.ncVersion >= 25;
   }
 
   get showNavigation() {
@@ -264,6 +243,7 @@ export default class App extends Mixins(GlobalMixin, UserConfig) {
 
   async beforeMount() {
     if ("serviceWorker" in navigator) {
+      return;
       // Use the window load event to keep the page load performant
       window.addEventListener("load", async () => {
         try {
@@ -282,8 +262,8 @@ export default class App extends Mixins(GlobalMixin, UserConfig) {
   }
 
   linkClick() {
-    const nav: any = this.$refs.nav;
-    if (globalThis.windowInnerWidth <= 1024) nav?.toggleNavigation(false);
+    if (globalThis.windowInnerWidth <= 1024)
+      (<any>this.$refs.nav)?.toggleNavigation(false);
   }
 
   doRouteChecks() {
@@ -312,53 +292,11 @@ export default class App extends Mixins(GlobalMixin, UserConfig) {
 }
 </script>
 
-<style scoped lang="scss">
-.outer {
-  padding: 0 0 0 44px;
-  height: 100%;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .outer {
-    padding: 0px;
-
-    // Get rid of padding on img-outer (1px on mobile)
-    // Also need to make sure we don't end up with a scrollbar -- see below
-    margin-left: -1px;
-    width: calc(100% + 3px); // 1px extra here because ... reasons
-  }
-}
-</style>
-
 <style lang="scss">
 body {
   overflow: hidden;
-}
-
-// Nextcloud 25+: get rid of gap and border radius at right
-#content-vue.remove-gap {
-  // was var(--body-container-radius)
-  // now set on #app-navigation-vue
-  border-radius: 0;
-  width: calc(100% - var(--body-container-margin) * 1); // was *2
-
-  // Reduce size of navigation. NC <25 doesn't like this on mobile.
-  #app-navigation-vue {
-    max-width: 250px;
-  }
-}
-
-// Prevent content overflow on NC <25
-#content-vue {
-  max-height: 100vh;
-
-  // https://bugs.webkit.org/show_bug.cgi?id=160953
-  overflow: visible;
-  #app-navigation-vue {
-    border-top-left-radius: var(--body-container-radius);
-    border-bottom-left-radius: var(--body-container-radius);
-  }
+  margin: 0;
+  padding: 0;
 }
 
 // Top bar is above everything else on mobile

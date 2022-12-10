@@ -62,7 +62,7 @@ export default class Modal extends Vue {
 
   mounted() {
     if (this.sidebar) {
-      globalThis.OCA.Files.Sidebar.open(this.sidebar);
+      globalThis.OCA.Files?.Sidebar?.open(this.sidebar);
     }
   }
 
